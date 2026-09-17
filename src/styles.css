@@ -17,3 +17,4 @@
 @media(max-width:767px){.home-gallery{grid-template-columns:1fr 1fr}.home-gallery>div{grid-column:1/-1}.home-gallery img{height:430px}.home-gallery img:last-child{height:300px;margin-bottom:0}}
 .hero-center{width:100%;min-width:0}.hero-center>*{max-width:100%}
 @media(max-width:767px){.hero h1{width:100%;font-size:clamp(2.9rem,12.4vw,3.5rem);line-height:.98}.hero-center>p:not(.hero-brand){width:100%;padding-inline:.25rem}.hero-actions{max-width:350px}.hero-actions a{color:var(--cream)}.hero-actions a:first-child{color:var(--olive)}.mobile-reserve-pill{right:1rem;max-width:calc(100vw - 2rem)}}
+@media(max-width:767px){.hero h1{font-size:3rem;letter-spacing:-.055em}.hero h1 span,.hero h1 em{display:inline-block;max-width:100%;white-space:nowrap}}
