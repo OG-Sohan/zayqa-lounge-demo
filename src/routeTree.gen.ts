@@ -10,33 +10,269 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccountRouteImport } from './routes/account'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthCallbackRouteImport } from './routes/auth-callback'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ExperienceRouteImport } from './routes/experience'
+import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as LocationRouteImport } from './routes/location'
+import { Route as MenuRouteImport } from './routes/menu'
+import { Route as OrderConfirmationRouteImport } from './routes/order-confirmation'
+import { Route as PrivateDiningRouteImport } from './routes/private-dining'
+import { Route as ReservationConfirmationRouteImport } from './routes/reservation-confirmation'
+import { Route as ReserveRouteImport } from './routes/reserve'
+import { Route as MenuCategoryRouteImport } from './routes/menu.$category'
+import { Route as MenuItemSlugRouteImport } from './routes/menu.item.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth-callback',
+  path: '/auth-callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExperienceRoute = ExperienceRouteImport.update({
+  id: '/experience',
+  path: '/experience',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LocationRoute = LocationRouteImport.update({
+  id: '/location',
+  path: '/location',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MenuRoute = MenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrderConfirmationRoute = OrderConfirmationRouteImport.update({
+  id: '/order-confirmation',
+  path: '/order-confirmation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateDiningRoute = PrivateDiningRouteImport.update({
+  id: '/private-dining',
+  path: '/private-dining',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReservationConfirmationRoute = ReservationConfirmationRouteImport.update({
+  id: '/reservation-confirmation',
+  path: '/reservation-confirmation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReserveRoute = ReserveRouteImport.update({
+  id: '/reserve',
+  path: '/reserve',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MenuCategoryRoute = MenuCategoryRouteImport.update({
+  id: '/$category',
+  path: '/$category',
+  getParentRoute: () => MenuRoute,
+} as any)
+const MenuItemSlugRoute = MenuItemSlugRouteImport.update({
+  id: '/item/$slug',
+  path: '/item/$slug',
+  getParentRoute: () => MenuRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/auth-callback': typeof AuthCallbackRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/experience': typeof ExperienceRoute
+  '/gallery': typeof GalleryRoute
+  '/location': typeof LocationRoute
+  '/menu': typeof MenuRouteWithChildren
+  '/order-confirmation': typeof OrderConfirmationRoute
+  '/private-dining': typeof PrivateDiningRoute
+  '/reservation-confirmation': typeof ReservationConfirmationRoute
+  '/reserve': typeof ReserveRoute
+  '/menu/$category': typeof MenuCategoryRoute
+  '/menu/item/$slug': typeof MenuItemSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/auth-callback': typeof AuthCallbackRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/experience': typeof ExperienceRoute
+  '/gallery': typeof GalleryRoute
+  '/location': typeof LocationRoute
+  '/menu': typeof MenuRouteWithChildren
+  '/order-confirmation': typeof OrderConfirmationRoute
+  '/private-dining': typeof PrivateDiningRoute
+  '/reservation-confirmation': typeof ReservationConfirmationRoute
+  '/reserve': typeof ReserveRoute
+  '/menu/$category': typeof MenuCategoryRoute
+  '/menu/item/$slug': typeof MenuItemSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/auth-callback': typeof AuthCallbackRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/experience': typeof ExperienceRoute
+  '/gallery': typeof GalleryRoute
+  '/location': typeof LocationRoute
+  '/menu': typeof MenuRouteWithChildren
+  '/order-confirmation': typeof OrderConfirmationRoute
+  '/private-dining': typeof PrivateDiningRoute
+  '/reservation-confirmation': typeof ReservationConfirmationRoute
+  '/reserve': typeof ReserveRoute
+  '/menu/$category': typeof MenuCategoryRoute
+  '/menu/item/$slug': typeof MenuItemSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/account'
+    | '/admin'
+    | '/auth'
+    | '/auth-callback'
+    | '/cart'
+    | '/checkout'
+    | '/contact'
+    | '/experience'
+    | '/gallery'
+    | '/location'
+    | '/menu'
+    | '/order-confirmation'
+    | '/private-dining'
+    | '/reservation-confirmation'
+    | '/reserve'
+    | '/menu/$category'
+    | '/menu/item/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/account'
+    | '/admin'
+    | '/auth'
+    | '/auth-callback'
+    | '/cart'
+    | '/checkout'
+    | '/contact'
+    | '/experience'
+    | '/gallery'
+    | '/location'
+    | '/menu'
+    | '/order-confirmation'
+    | '/private-dining'
+    | '/reservation-confirmation'
+    | '/reserve'
+    | '/menu/$category'
+    | '/menu/item/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/account'
+    | '/admin'
+    | '/auth'
+    | '/auth-callback'
+    | '/cart'
+    | '/checkout'
+    | '/contact'
+    | '/experience'
+    | '/gallery'
+    | '/location'
+    | '/menu'
+    | '/order-confirmation'
+    | '/private-dining'
+    | '/reservation-confirmation'
+    | '/reserve'
+    | '/menu/$category'
+    | '/menu/item/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AccountRoute: typeof AccountRoute
+  AdminRoute: typeof AdminRoute
+  AuthRoute: typeof AuthRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
+  CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRoute
+  ContactRoute: typeof ContactRoute
+  ExperienceRoute: typeof ExperienceRoute
+  GalleryRoute: typeof GalleryRoute
+  LocationRoute: typeof LocationRoute
+  MenuRoute: typeof MenuRouteWithChildren
+  OrderConfirmationRoute: typeof OrderConfirmationRoute
+  PrivateDiningRoute: typeof PrivateDiningRoute
+  ReservationConfirmationRoute: typeof ReservationConfirmationRoute
+  ReserveRoute: typeof ReserveRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +284,165 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth-callback': {
+      id: '/auth-callback'
+      path: '/auth-callback'
+      fullPath: '/auth-callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/experience': {
+      id: '/experience'
+      path: '/experience'
+      fullPath: '/experience'
+      preLoaderRoute: typeof ExperienceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/location': {
+      id: '/location'
+      path: '/location'
+      fullPath: '/location'
+      preLoaderRoute: typeof LocationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/menu': {
+      id: '/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof MenuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order-confirmation': {
+      id: '/order-confirmation'
+      path: '/order-confirmation'
+      fullPath: '/order-confirmation'
+      preLoaderRoute: typeof OrderConfirmationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-dining': {
+      id: '/private-dining'
+      path: '/private-dining'
+      fullPath: '/private-dining'
+      preLoaderRoute: typeof PrivateDiningRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reservation-confirmation': {
+      id: '/reservation-confirmation'
+      path: '/reservation-confirmation'
+      fullPath: '/reservation-confirmation'
+      preLoaderRoute: typeof ReservationConfirmationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reserve': {
+      id: '/reserve'
+      path: '/reserve'
+      fullPath: '/reserve'
+      preLoaderRoute: typeof ReserveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/menu/$category': {
+      id: '/menu/$category'
+      path: '/$category'
+      fullPath: '/menu/$category'
+      preLoaderRoute: typeof MenuCategoryRouteImport
+      parentRoute: typeof MenuRoute
+    }
+    '/menu/item/$slug': {
+      id: '/menu/item/$slug'
+      path: '/item/$slug'
+      fullPath: '/menu/item/$slug'
+      preLoaderRoute: typeof MenuItemSlugRouteImport
+      parentRoute: typeof MenuRoute
+    }
   }
 }
 
+interface MenuRouteChildren {
+  MenuCategoryRoute: typeof MenuCategoryRoute
+  MenuItemSlugRoute: typeof MenuItemSlugRoute
+}
+
+const MenuRouteChildren: MenuRouteChildren = {
+  MenuCategoryRoute: MenuCategoryRoute,
+  MenuItemSlugRoute: MenuItemSlugRoute,
+}
+
+const MenuRouteWithChildren = MenuRoute._addFileChildren(MenuRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AccountRoute: AccountRoute,
+  AdminRoute: AdminRoute,
+  AuthRoute: AuthRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
+  CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRoute,
+  ContactRoute: ContactRoute,
+  ExperienceRoute: ExperienceRoute,
+  GalleryRoute: GalleryRoute,
+  LocationRoute: LocationRoute,
+  MenuRoute: MenuRouteWithChildren,
+  OrderConfirmationRoute: OrderConfirmationRoute,
+  PrivateDiningRoute: PrivateDiningRoute,
+  ReservationConfirmationRoute: ReservationConfirmationRoute,
+  ReserveRoute: ReserveRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
