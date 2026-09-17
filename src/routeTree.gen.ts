@@ -10,7 +10,15 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as ExperienceRouteImport } from './routes/experience'
+import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as MenuRouteImport } from './routes/menu'
+import { Route as OrderConfirmationRouteImport } from './routes/order-confirmation'
+import { Route as ReservationConfirmationRouteImport } from './routes/reservation-confirmation'
+import { Route as ReserveRouteImport } from './routes/reserve'
 import { Route as MenuCategoryRouteImport } from './routes/menu.$category'
 import { Route as MenuItemSlugRouteImport } from './routes/menu.item.$slug'
 
@@ -19,9 +27,49 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExperienceRoute = ExperienceRouteImport.update({
+  id: '/experience',
+  path: '/experience',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MenuRoute = MenuRouteImport.update({
   id: '/menu',
   path: '/menu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrderConfirmationRoute = OrderConfirmationRouteImport.update({
+  id: '/order-confirmation',
+  path: '/order-confirmation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReservationConfirmationRoute = ReservationConfirmationRouteImport.update({
+  id: '/reservation-confirmation',
+  path: '/reservation-confirmation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReserveRoute = ReserveRouteImport.update({
+  id: '/reserve',
+  path: '/reserve',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MenuCategoryRoute = MenuCategoryRouteImport.update({
@@ -37,34 +85,103 @@ const MenuItemSlugRoute = MenuItemSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/experience': typeof ExperienceRoute
+  '/gallery': typeof GalleryRoute
   '/menu': typeof MenuRouteWithChildren
+  '/order-confirmation': typeof OrderConfirmationRoute
+  '/reservation-confirmation': typeof ReservationConfirmationRoute
+  '/reserve': typeof ReserveRoute
   '/menu/$category': typeof MenuCategoryRoute
   '/menu/item/$slug': typeof MenuItemSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/experience': typeof ExperienceRoute
+  '/gallery': typeof GalleryRoute
   '/menu': typeof MenuRouteWithChildren
+  '/order-confirmation': typeof OrderConfirmationRoute
+  '/reservation-confirmation': typeof ReservationConfirmationRoute
+  '/reserve': typeof ReserveRoute
   '/menu/$category': typeof MenuCategoryRoute
   '/menu/item/$slug': typeof MenuItemSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/experience': typeof ExperienceRoute
+  '/gallery': typeof GalleryRoute
   '/menu': typeof MenuRouteWithChildren
+  '/order-confirmation': typeof OrderConfirmationRoute
+  '/reservation-confirmation': typeof ReservationConfirmationRoute
+  '/reserve': typeof ReserveRoute
   '/menu/$category': typeof MenuCategoryRoute
   '/menu/item/$slug': typeof MenuItemSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/menu' | '/menu/$category' | '/menu/item/$slug'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/cart'
+    | '/checkout'
+    | '/experience'
+    | '/gallery'
+    | '/menu'
+    | '/order-confirmation'
+    | '/reservation-confirmation'
+    | '/reserve'
+    | '/menu/$category'
+    | '/menu/item/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/menu' | '/menu/$category' | '/menu/item/$slug'
-  id: '__root__' | '/' | '/menu' | '/menu/$category' | '/menu/item/$slug'
+  to:
+    | '/'
+    | '/about'
+    | '/cart'
+    | '/checkout'
+    | '/experience'
+    | '/gallery'
+    | '/menu'
+    | '/order-confirmation'
+    | '/reservation-confirmation'
+    | '/reserve'
+    | '/menu/$category'
+    | '/menu/item/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/cart'
+    | '/checkout'
+    | '/experience'
+    | '/gallery'
+    | '/menu'
+    | '/order-confirmation'
+    | '/reservation-confirmation'
+    | '/reserve'
+    | '/menu/$category'
+    | '/menu/item/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRoute
+  ExperienceRoute: typeof ExperienceRoute
+  GalleryRoute: typeof GalleryRoute
   MenuRoute: typeof MenuRouteWithChildren
+  OrderConfirmationRoute: typeof OrderConfirmationRoute
+  ReservationConfirmationRoute: typeof ReservationConfirmationRoute
+  ReserveRoute: typeof ReserveRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -76,11 +193,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/experience': {
+      id: '/experience'
+      path: '/experience'
+      fullPath: '/experience'
+      preLoaderRoute: typeof ExperienceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/menu': {
       id: '/menu'
       path: '/menu'
       fullPath: '/menu'
       preLoaderRoute: typeof MenuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order-confirmation': {
+      id: '/order-confirmation'
+      path: '/order-confirmation'
+      fullPath: '/order-confirmation'
+      preLoaderRoute: typeof OrderConfirmationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reservation-confirmation': {
+      id: '/reservation-confirmation'
+      path: '/reservation-confirmation'
+      fullPath: '/reservation-confirmation'
+      preLoaderRoute: typeof ReservationConfirmationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reserve': {
+      id: '/reserve'
+      path: '/reserve'
+      fullPath: '/reserve'
+      preLoaderRoute: typeof ReserveRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/menu/$category': {
@@ -114,7 +287,15 @@ const MenuRouteWithChildren = MenuRoute._addFileChildren(MenuRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRoute,
+  ExperienceRoute: ExperienceRoute,
+  GalleryRoute: GalleryRoute,
   MenuRoute: MenuRouteWithChildren,
+  OrderConfirmationRoute: OrderConfirmationRoute,
+  ReservationConfirmationRoute: ReservationConfirmationRoute,
+  ReserveRoute: ReserveRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
