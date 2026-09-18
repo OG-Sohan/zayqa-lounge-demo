@@ -1,0 +1,5 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { CategoryNav, MenuCategory } from "@/components/menu-ui";
+import { getPublicMenu } from "@/lib/menu.functions";
+export const Route=createFileRoute("/menu/")({loader:()=>getPublicMenu(),head:()=>({meta:[{title:"Menu — Zayqa Lounge"},{name:"description",content:"Browse Zayqa Lounge starters, signatures, mains, grills, desserts and drinks."},{property:"og:title",content:"Menu — Zayqa Lounge"},{property:"og:description",content:"Food for sharing, lingering and returning to."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:MenuPage});
+function MenuPage(){const {categories,dishes}=Route.useLoaderData();return <div className="page menu-page"><header className="page-hero compact"><p className="eyebrow">Taste · Connect · Unwind</p><h1>The menu</h1><p>Food for sharing, lingering and returning to.</p></header><div className="menu-nav-wrap"><span>Browse menu</span><CategoryNav categories={categories}/></div>{categories.map((c,i)=><MenuCategory key={c.slug} cat={c} dishes={dishes} index={i}/>)}</div>}

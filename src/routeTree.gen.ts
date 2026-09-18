@@ -26,6 +26,7 @@ import { Route as OrderConfirmationRouteImport } from './routes/order-confirmati
 import { Route as PrivateDiningRouteImport } from './routes/private-dining'
 import { Route as ReservationConfirmationRouteImport } from './routes/reservation-confirmation'
 import { Route as ReserveRouteImport } from './routes/reserve'
+import { Route as MenuIndexRouteImport } from './routes/menu.index'
 import { Route as MenuCategoryRouteImport } from './routes/menu.$category'
 import { Route as MenuItemSlugRouteImport } from './routes/menu.item.$slug'
 
@@ -114,6 +115,11 @@ const ReserveRoute = ReserveRouteImport.update({
   path: '/reserve',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MenuIndexRoute = MenuIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MenuRoute,
+} as any)
 const MenuCategoryRoute = MenuCategoryRouteImport.update({
   id: '/$category',
   path: '/$category',
@@ -144,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/reservation-confirmation': typeof ReservationConfirmationRoute
   '/reserve': typeof ReserveRoute
   '/menu/$category': typeof MenuCategoryRoute
+  '/menu/': typeof MenuIndexRoute
   '/menu/item/$slug': typeof MenuItemSlugRoute
 }
 export interface FileRoutesByTo {
@@ -159,12 +166,12 @@ export interface FileRoutesByTo {
   '/experience': typeof ExperienceRoute
   '/gallery': typeof GalleryRoute
   '/location': typeof LocationRoute
-  '/menu': typeof MenuRouteWithChildren
   '/order-confirmation': typeof OrderConfirmationRoute
   '/private-dining': typeof PrivateDiningRoute
   '/reservation-confirmation': typeof ReservationConfirmationRoute
   '/reserve': typeof ReserveRoute
   '/menu/$category': typeof MenuCategoryRoute
+  '/menu': typeof MenuIndexRoute
   '/menu/item/$slug': typeof MenuItemSlugRoute
 }
 export interface FileRoutesById {
@@ -187,6 +194,7 @@ export interface FileRoutesById {
   '/reservation-confirmation': typeof ReservationConfirmationRoute
   '/reserve': typeof ReserveRoute
   '/menu/$category': typeof MenuCategoryRoute
+  '/menu/': typeof MenuIndexRoute
   '/menu/item/$slug': typeof MenuItemSlugRoute
 }
 export interface FileRouteTypes {
@@ -210,6 +218,7 @@ export interface FileRouteTypes {
     | '/reservation-confirmation'
     | '/reserve'
     | '/menu/$category'
+    | '/menu/'
     | '/menu/item/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -225,12 +234,12 @@ export interface FileRouteTypes {
     | '/experience'
     | '/gallery'
     | '/location'
-    | '/menu'
     | '/order-confirmation'
     | '/private-dining'
     | '/reservation-confirmation'
     | '/reserve'
     | '/menu/$category'
+    | '/menu'
     | '/menu/item/$slug'
   id:
     | '__root__'
@@ -252,6 +261,7 @@ export interface FileRouteTypes {
     | '/reservation-confirmation'
     | '/reserve'
     | '/menu/$category'
+    | '/menu/'
     | '/menu/item/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -396,6 +406,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReserveRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/menu/': {
+      id: '/menu/'
+      path: '/'
+      fullPath: '/menu/'
+      preLoaderRoute: typeof MenuIndexRouteImport
+      parentRoute: typeof MenuRoute
+    }
     '/menu/$category': {
       id: '/menu/$category'
       path: '/$category'
@@ -415,11 +432,13 @@ declare module '@tanstack/react-router' {
 
 interface MenuRouteChildren {
   MenuCategoryRoute: typeof MenuCategoryRoute
+  MenuIndexRoute: typeof MenuIndexRoute
   MenuItemSlugRoute: typeof MenuItemSlugRoute
 }
 
 const MenuRouteChildren: MenuRouteChildren = {
   MenuCategoryRoute: MenuCategoryRoute,
+  MenuIndexRoute: MenuIndexRoute,
   MenuItemSlugRoute: MenuItemSlugRoute,
 }
 
