@@ -22,7 +22,7 @@
 .hero-actions a,.reserve-home a{position:relative;letter-spacing:.22em;font-size:.72rem;padding:1.05rem 2.2rem;overflow:hidden;transition:color .35s,background-color .35s,border-color .35s,transform .35s,box-shadow .35s}
 .hero-actions a:hover,.reserve-home a:hover{transform:translateY(-2px);box-shadow:0 14px 34px -12px rgba(20,16,13,.55)}
 /* Dish carousels */
-.dish-carousel{position:relative}
+.dish-carousel{position:relative;min-width:0}.featured-grid>*{min-width:0}
 .dish-carousel-track{display:flex;gap:clamp(1rem,2vw,2rem);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:.5rem}
 .dish-carousel-track::-webkit-scrollbar{display:none}
 .dish-carousel-track .dish-card{flex:0 0 clamp(240px,26vw,340px);scroll-snap-align:start}
