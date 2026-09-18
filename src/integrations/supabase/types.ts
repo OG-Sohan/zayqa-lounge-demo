@@ -102,6 +102,7 @@ export type Database = {
           dietary: string[]
           id: string
           image_key: string | null
+          image_url: string | null
           ingredients: string[]
           is_available: boolean
           is_featured: boolean
@@ -119,6 +120,7 @@ export type Database = {
           dietary?: string[]
           id?: string
           image_key?: string | null
+          image_url?: string | null
           ingredients?: string[]
           is_available?: boolean
           is_featured?: boolean
@@ -136,6 +138,7 @@ export type Database = {
           dietary?: string[]
           id?: string
           image_key?: string | null
+          image_url?: string | null
           ingredients?: string[]
           is_available?: boolean
           is_featured?: boolean
@@ -325,6 +328,24 @@ export type Database = {
           status?: Database["public"]["Enums"]["reservation_status"]
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
         }
         Relationships: []
       }
