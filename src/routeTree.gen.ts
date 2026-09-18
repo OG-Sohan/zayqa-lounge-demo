@@ -29,6 +29,7 @@ import { Route as ReserveRouteImport } from './routes/reserve'
 import { Route as MenuIndexRouteImport } from './routes/menu.index'
 import { Route as MenuCategoryRouteImport } from './routes/menu.$category'
 import { Route as MenuItemSlugRouteImport } from './routes/menu.item.$slug'
+import { Route as ApiPublicMediaSplatRouteImport } from './routes/api/public/media.$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -130,6 +131,11 @@ const MenuItemSlugRoute = MenuItemSlugRouteImport.update({
   path: '/item/$slug',
   getParentRoute: () => MenuRoute,
 } as any)
+const ApiPublicMediaSplatRoute = ApiPublicMediaSplatRouteImport.update({
+  id: '/api/public/media/$',
+  path: '/api/public/media/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/menu/$category': typeof MenuCategoryRoute
   '/menu/': typeof MenuIndexRoute
   '/menu/item/$slug': typeof MenuItemSlugRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/menu/$category': typeof MenuCategoryRoute
   '/menu': typeof MenuIndexRoute
   '/menu/item/$slug': typeof MenuItemSlugRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/menu/$category': typeof MenuCategoryRoute
   '/menu/': typeof MenuIndexRoute
   '/menu/item/$slug': typeof MenuItemSlugRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/menu/$category'
     | '/menu/'
     | '/menu/item/$slug'
+    | '/api/public/media/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -241,6 +251,7 @@ export interface FileRouteTypes {
     | '/menu/$category'
     | '/menu'
     | '/menu/item/$slug'
+    | '/api/public/media/$'
   id:
     | '__root__'
     | '/'
@@ -263,6 +274,7 @@ export interface FileRouteTypes {
     | '/menu/$category'
     | '/menu/'
     | '/menu/item/$slug'
+    | '/api/public/media/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -283,6 +295,7 @@ export interface RootRouteChildren {
   PrivateDiningRoute: typeof PrivateDiningRoute
   ReservationConfirmationRoute: typeof ReservationConfirmationRoute
   ReserveRoute: typeof ReserveRoute
+  ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -427,6 +440,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MenuItemSlugRouteImport
       parentRoute: typeof MenuRoute
     }
+    '/api/public/media/$': {
+      id: '/api/public/media/$'
+      path: '/api/public/media/$'
+      fullPath: '/api/public/media/$'
+      preLoaderRoute: typeof ApiPublicMediaSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -462,6 +482,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivateDiningRoute: PrivateDiningRoute,
   ReservationConfirmationRoute: ReservationConfirmationRoute,
   ReserveRoute: ReserveRoute,
+  ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
