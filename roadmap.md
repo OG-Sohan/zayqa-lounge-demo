@@ -1,9 +1,9 @@
-# Zayqa build roadmap
-- [x] Establish brand design system, shared restaurant data, navigation, footer, and cart state
-- [x] Build editorial homepage and cohesive image-led sections
-- [x] Build menu, category, dish detail, cart, checkout, and order confirmation flows
-- [x] Build reservation flow and confirmation
-- [x] Build about, experience, gallery, private dining, location, and contact pages
-- [x] Build customer sign-in/account history and protected owner-management foundation
-- [x] Add metadata and restaurant structured data to every content route
-- [x] Verify interactions and responsive layouts across requested breakpoints
+# Roadmap
+
+- [x] Fix intro heading "unwind" clipped behind the intro image (z-index)
+- [x] Footer: add Admin link leading to sign-in
+- [x] Remove Google sign-in from auth page (email/password only for now)
+- [x] Admin "Content" tab: edit hero/intro text + images (site_content table)
+- [x] Admin "Images" tab: media library — upload/remove images (site-media bucket)
+- [x] Menu: owner can upload dish photos (menu_items.image_url)
+- [x] Verify: build clean + owner sign-in + edit flows in preview
