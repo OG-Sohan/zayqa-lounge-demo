@@ -410,13 +410,13 @@ async function uploadMedia(file: File): Promise<string> {
   return `/api/public/media/${path}`;
 }
 
-const CONTENT_TEXT_FIELDS: { key: string; label: string; multiline?: boolean }[] = [
+const CONTENT_TEXT_FIELDS: { key: keyof SiteContent; label: string; multiline?: boolean }[] = [
   { key: "hero_heading_1", label: "Hero heading — first line" },
   { key: "hero_heading_2", label: "Hero heading — second line" },
   { key: "hero_subtext", label: "Hero supporting line" },
   { key: "intro_text", label: "Introduction paragraph", multiline: true },
 ];
-const CONTENT_IMAGE_FIELDS: { key: string; label: string }[] = [
+const CONTENT_IMAGE_FIELDS: { key: keyof SiteContent; label: string }[] = [
   { key: "hero_image", label: "Hero image" },
   { key: "intro_image", label: "Introduction image" },
 ];
@@ -430,7 +430,7 @@ function ContentManager() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  async function saveKey(key: string, value: string) {
+  async function saveKey(key: keyof SiteContent, value: string) {
     await saveContent({ data: { key, value } });
     queryClient.invalidateQueries({ queryKey: ["site-content"] });
   }
@@ -445,7 +445,7 @@ function ContentManager() {
     finally { setBusy(false); }
   }
 
-  async function pickImage(key: string, file: File) {
+  async function pickImage(key: keyof SiteContent, file: File) {
     setBusy(true); setError("");
     try {
       await saveKey(key, await uploadMedia(file));
