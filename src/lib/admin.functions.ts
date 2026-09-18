@@ -77,6 +77,7 @@ const menuItemSchema = z.object({
   description: z.string().min(2),
   price: z.number().positive(),
   image_key: z.string().nullable().optional(),
+  image_url: z.string().nullable().optional(),
   ingredients: z.array(z.string()),
   allergens: z.array(z.string()),
   dietary: z.array(z.string()),
@@ -95,6 +96,18 @@ export const upsertMenuItem = createServerFn({ method: "POST" })
     const { error } = id
       ? await supabase.from("menu_items").update(row).eq("id", id)
       : await supabase.from("menu_items").insert(row);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const upsertSiteContent = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ key: z.string().min(1).max(60), value: z.string().max(4000) }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context as AdminContext);
+    const { error } = await (context as AdminContext).supabase
+      .from("site_content")
+      .upsert({ key: data.key, value: data.value, updated_at: new Date().toISOString() });
     if (error) throw new Error(error.message);
     return { ok: true };
   });

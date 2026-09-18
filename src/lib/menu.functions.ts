@@ -22,7 +22,7 @@ export const getPublicMenu = createServerFn({ method: "GET" }).handler(async ():
   });
   const [{ data: cats, error: catErr }, { data: items, error: itemErr }] = await Promise.all([
     supabase.from("menu_categories").select("slug, name, description, sort_order").eq("is_available", true).order("sort_order"),
-    supabase.from("menu_items").select("slug, name, description, price, image_key, ingredients, allergens, dietary, add_ons, is_featured, category_id").eq("is_available", true),
+    supabase.from("menu_items").select("slug, name, description, price, image_key, image_url, ingredients, allergens, dietary, add_ons, is_featured, category_id").eq("is_available", true),
   ]);
   if (catErr) throw new Error(catErr.message);
   if (itemErr) throw new Error(itemErr.message);
@@ -42,7 +42,7 @@ export const getPublicMenu = createServerFn({ method: "GET" }).handler(async ():
     description: i.description,
     longDescription: i.description,
     price: Number(i.price),
-    image: images[(i.image_key as keyof typeof images) ?? "table"] ?? images.table,
+    image: i.image_url ?? (images[(i.image_key as keyof typeof images) ?? "table"] ?? images.table),
     ingredients: i.ingredients ?? [],
     allergens: i.allergens ?? [],
     dietary: i.dietary ?? [],
