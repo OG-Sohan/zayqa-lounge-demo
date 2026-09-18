@@ -18,7 +18,7 @@ import {
   upsertMenuItem,
   upsertSiteContent,
 } from "@/lib/admin.functions";
-import { getSiteContent } from "@/lib/content.functions";
+import { getSiteContent, type SiteContent } from "@/lib/content.functions";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Owner — Zayqa Lounge" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -405,7 +405,7 @@ async function listMedia(): Promise<MediaFile[]> {
 async function uploadMedia(file: File): Promise<string> {
   const ext = (file.name.split(".").pop() ?? "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
   const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const { error } = await supabase.storage.from("site-media").upload(path, file, { contentType: file.type || undefined });
+  const { error } = await supabase.storage.from("site-media").upload(path, file, { contentType: file.type || "application/octet-stream" });
   if (error) throw new Error(error.message);
   return `/api/public/media/${path}`;
 }
@@ -425,7 +425,7 @@ function ContentManager() {
   const fetchContent = useServerFn(getSiteContent);
   const saveContent = useServerFn(upsertSiteContent);
   const queryClient = useQueryClient();
-  const { data: content } = useQuery({ queryKey: ["site-content"], queryFn: fetchContent as () => Promise<Record<string, string>> });
+  const { data: content } = useQuery({ queryKey: ["site-content"], queryFn: fetchContent as () => Promise<SiteContent> });
   const { data: media } = useQuery({ queryKey: ["site-media"], queryFn: listMedia });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
