@@ -16,7 +16,9 @@ import {
   updateOrderStatus,
   updateReservationStatus,
   upsertMenuItem,
+  upsertSiteContent,
 } from "@/lib/admin.functions";
+import { getSiteContent } from "@/lib/content.functions";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Owner — Zayqa Lounge" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -37,7 +39,7 @@ interface Dashboard {
   categories: Tables["menu_categories"]["Row"][];
 }
 type MenuItemRow = Tables["menu_items"]["Row"];
-type Tab = "overview" | "orders" | "reservations" | "menu" | "enquiries";
+type Tab = "overview" | "orders" | "reservations" | "menu" | "enquiries" | "content" | "images";
 
 const pretty = (s: string) => s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
@@ -94,6 +96,8 @@ function Admin() {
     { id: "reservations", label: `Reservations (${upcoming})` },
     { id: "menu", label: "Menu" },
     { id: "enquiries", label: `Enquiries (${newEnquiries})` },
+    { id: "content", label: "Site content" },
+    { id: "images", label: "Images" },
   ];
 
   return (
@@ -118,6 +122,8 @@ function Admin() {
         {data && tab === "reservations" && <Reservations data={data} onChanged={() => queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] })} />}
         {data && tab === "menu" && <MenuManager data={data} onChanged={() => queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] })} />}
         {data && tab === "enquiries" && <Enquiries data={data} onChanged={() => queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] })} />}
+        {tab === "content" && <ContentManager />}
+        {tab === "images" && <ImagesManager />}
       </main>
     </div>
   );
@@ -254,6 +260,7 @@ const blankItem = (categoryId: string) => ({
   description: "",
   price: 10,
   image_key: "table",
+  image_url: null as string | null,
   ingredients: [] as string[],
   allergens: [] as string[],
   dietary: [] as string[],
@@ -275,6 +282,10 @@ function MenuManager({ data, onChanged }: { data: Dashboard; onChanged: () => vo
     setBusy(true); setError("");
     const f = new FormData(e.currentTarget);
     try {
+      let imageUrl = String(f.get("image_url") ?? "") || null;
+      if (f.get("clear_photo") === "on") imageUrl = null;
+      const photo = f.get("photo");
+      if (photo instanceof File && photo.size > 0) imageUrl = await uploadMedia(photo);
       await save({
         data: {
           ...("id" in editing && editing.id ? { id: editing.id } : {}),
@@ -284,6 +295,7 @@ function MenuManager({ data, onChanged }: { data: Dashboard; onChanged: () => vo
           description: String(f.get("description")),
           price: Number(f.get("price")),
           image_key: String(f.get("image_key")) || null,
+          image_url: imageUrl,
           ingredients: String(f.get("ingredients")).split(",").map((s) => s.trim()).filter(Boolean),
           allergens: String(f.get("allergens")).split(",").map((s) => s.trim()).filter(Boolean),
           dietary: String(f.get("dietary")).split(",").map((s) => s.trim()).filter(Boolean),
@@ -328,6 +340,14 @@ function MenuManager({ data, onChanged }: { data: Dashboard; onChanged: () => vo
             <label>Image key<Input name="image_key" defaultValue={item.image_key ?? "table"} placeholder="biryani, lamb, seabass, dessert, table, kitchen" /></label>
             <label>Dietary (comma separated)<Input name="dietary" defaultValue={item.dietary.join(", ")} placeholder="Halal, Gluten-free" /></label>
           </div>
+          <input type="hidden" name="image_url" defaultValue={item.image_url ?? ""} />
+          {item.image_url && <img src={item.image_url} alt="" className="admin-thumb" />}
+          <label>Dish photo (optional — uploads replace the built-in image)<Input name="photo" type="file" accept="image/*" /></label>
+          {item.image_url && (
+            <div className="admin-checks">
+              <label><input type="checkbox" name="clear_photo" /> Remove uploaded photo and use the built-in image</label>
+            </div>
+          )}
           <label>Ingredients (comma separated)<Input name="ingredients" defaultValue={item.ingredients.join(", ")} /></label>
           <label>Allergens (comma separated)<Input name="allergens" defaultValue={item.allergens.join(", ")} /></label>
           <label>Add-ons (name:price, comma separated)<Input name="add_ons" defaultValue={item.add_ons.map((a) => `${a.name}:${a.price}`).join(", ")} placeholder="Extra lamb:8, Garlic naan:5" /></label>
@@ -371,6 +391,146 @@ function MenuManager({ data, onChanged }: { data: Dashboard; onChanged: () => vo
           </div>
         </section>
       ))}
+    </>
+  );
+}
+
+type MediaFile = { name: string; url: string };
+
+async function listMedia(): Promise<MediaFile[]> {
+  const { data } = await supabase.storage.from("site-media").list("", { limit: 200, sortBy: { column: "created_at", order: "desc" } });
+  return (data ?? []).filter((f) => f.name).map((f) => ({ name: f.name, url: `/api/public/media/${f.name}` }));
+}
+
+async function uploadMedia(file: File): Promise<string> {
+  const ext = (file.name.split(".").pop() ?? "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+  const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await supabase.storage.from("site-media").upload(path, file, { contentType: file.type || undefined });
+  if (error) throw new Error(error.message);
+  return `/api/public/media/${path}`;
+}
+
+const CONTENT_TEXT_FIELDS: { key: string; label: string; multiline?: boolean }[] = [
+  { key: "hero_heading_1", label: "Hero heading — first line" },
+  { key: "hero_heading_2", label: "Hero heading — second line" },
+  { key: "hero_subtext", label: "Hero supporting line" },
+  { key: "intro_text", label: "Introduction paragraph", multiline: true },
+];
+const CONTENT_IMAGE_FIELDS: { key: string; label: string }[] = [
+  { key: "hero_image", label: "Hero image" },
+  { key: "intro_image", label: "Introduction image" },
+];
+
+function ContentManager() {
+  const fetchContent = useServerFn(getSiteContent);
+  const saveContent = useServerFn(upsertSiteContent);
+  const queryClient = useQueryClient();
+  const { data: content } = useQuery({ queryKey: ["site-content"], queryFn: fetchContent as () => Promise<Record<string, string>> });
+  const { data: media } = useQuery({ queryKey: ["site-media"], queryFn: listMedia });
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  async function saveKey(key: string, value: string) {
+    await saveContent({ data: { key, value } });
+    queryClient.invalidateQueries({ queryKey: ["site-content"] });
+  }
+
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setBusy(true); setError("");
+    try {
+      const f = new FormData(e.currentTarget);
+      for (const field of CONTENT_TEXT_FIELDS) await saveKey(field.key, String(f.get(field.key) ?? ""));
+    } catch (err) { setError(err instanceof Error ? err.message : "Could not save."); }
+    finally { setBusy(false); }
+  }
+
+  async function pickImage(key: string, file: File) {
+    setBusy(true); setError("");
+    try {
+      await saveKey(key, await uploadMedia(file));
+      queryClient.invalidateQueries({ queryKey: ["site-media"] });
+    } catch (err) { setError(err instanceof Error ? err.message : "Upload failed."); }
+    finally { setBusy(false); }
+  }
+
+  if (!content) return <p className="demo-note">Loading content…</p>;
+  return (
+    <>
+      <p className="eyebrow">Site content</p>
+      <h1>Words and pictures.</h1>
+      <form className="admin-form" onSubmit={submit}>
+        {CONTENT_TEXT_FIELDS.map((field) =>
+          field.multiline
+            ? <label key={field.key}>{field.label}<Textarea name={field.key} defaultValue={content[field.key] ?? ""} /></label>
+            : <label key={field.key}>{field.label}<Input name={field.key} defaultValue={content[field.key] ?? ""} /></label>,
+        )}
+        {error && <p className="form-error" role="alert">{error}</p>}
+        <div className="admin-form-actions"><Button type="submit" disabled={busy}>{busy ? "Saving…" : "Save text"}</Button></div>
+      </form>
+      <div className="admin-image-slots">
+        {CONTENT_IMAGE_FIELDS.map((field) => (
+          <div key={field.key} className="admin-image-slot">
+            <strong>{field.label}</strong>
+            {content[field.key]
+              ? <img src={content[field.key]} alt="" />
+              : <p className="demo-note">Using the built-in photograph.</p>}
+            <div className="admin-slot-controls">
+              <select value={content[field.key]} disabled={busy} onChange={async (e) => { setBusy(true); setError(""); try { await saveKey(field.key, e.target.value); } catch (err) { setError(err instanceof Error ? err.message : "Could not save."); } finally { setBusy(false); } }}>
+                <option value="">Built-in default</option>
+                {(media ?? []).map((m) => <option key={m.name} value={m.url}>{m.name}</option>)}
+              </select>
+              <label className="admin-upload">
+                Upload new
+                <input type="file" accept="image/*" disabled={busy} onChange={(e) => { const file = e.target.files?.[0]; if (file) pickImage(field.key, file); e.target.value = ""; }} />
+              </label>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function ImagesManager() {
+  const queryClient = useQueryClient();
+  const { data: media, isLoading } = useQuery({ queryKey: ["site-media"], queryFn: listMedia });
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  return (
+    <>
+      <p className="eyebrow">Images</p>
+      <h1>The photo library.</h1>
+      <p className="demo-note">Photographs here can be placed on the homepage and on any dish.</p>
+      <label className="admin-upload">
+        Add photographs
+        <input type="file" accept="image/*" multiple disabled={busy} onChange={async (e) => {
+          const files = Array.from(e.target.files ?? []);
+          if (!files.length) return;
+          setBusy(true); setError("");
+          try { for (const file of files) await uploadMedia(file); queryClient.invalidateQueries({ queryKey: ["site-media"] }); }
+          catch (err) { setError(err instanceof Error ? err.message : "Upload failed."); }
+          finally { setBusy(false); e.target.value = ""; }
+        }} />
+      </label>
+      {error && <p className="form-error" role="alert">{error}</p>}
+      {isLoading && <p className="demo-note">Loading photographs…</p>}
+      {media && media.length === 0 && !isLoading && <p className="demo-note">No photographs yet — add the first one above.</p>}
+      <div className="admin-media-grid">
+        {(media ?? []).map((m) => (
+          <figure key={m.name}>
+            <img src={m.url} alt={m.name} loading="lazy" />
+            <figcaption>{m.name}</figcaption>
+            <Button variant="text" disabled={busy} onClick={async () => {
+              if (!confirm("Remove this photograph?")) return;
+              setBusy(true);
+              await supabase.storage.from("site-media").remove([m.name]);
+              setBusy(false);
+              queryClient.invalidateQueries({ queryKey: ["site-media"] });
+            }}>Remove</Button>
+          </figure>
+        ))}
+      </div>
     </>
   );
 }

@@ -65,3 +65,12 @@
 .admin-checks{display:flex;gap:2rem}.admin-checks label{flex-direction:row;align-items:center;gap:.5rem;text-transform:none;letter-spacing:0;font-size:.9rem}
 .admin-form-actions{display:flex;gap:1rem;align-items:center}
 @media(max-width:767px){.admin-card-head{flex-direction:column}.admin-card-side{align-items:flex-start;flex-direction:row;flex-wrap:wrap}}
+.admin-image-slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2.5rem;margin-top:3rem}
+.admin-image-slot img{width:100%;aspect-ratio:16/10;object-fit:cover;margin:.75rem 0}
+.admin-slot-controls{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem}
+.admin-upload{display:inline-flex;align-items:center;border:1px solid currentColor;padding:.6rem 1.2rem;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.admin-upload input[type=file]{display:none}
+.admin-media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1.25rem;margin-top:2rem}
+.admin-media-grid img{width:100%;aspect-ratio:4/5;object-fit:cover}
+.admin-media-grid figcaption{font-size:.68rem;opacity:.6;word-break:break-all;margin:.4rem 0}
+.admin-thumb{width:120px;aspect-ratio:4/5;object-fit:cover;display:block;margin-bottom:.5rem}
