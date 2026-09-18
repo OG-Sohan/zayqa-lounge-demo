@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Minus, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
+import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/cart-context";
 import { categories, dishes, money, type CategorySlug, type Dish } from "@/lib/zayqa-data";
