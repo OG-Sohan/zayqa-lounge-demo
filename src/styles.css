@@ -78,9 +78,6 @@
 .footer-legal{display:flex;gap:1.75rem;flex-wrap:wrap}
 .footer-legal a{transition:color .25s}.footer-legal a:hover{color:var(--cream)}
 .footer-actions{display:flex;align-items:center;gap:1.75rem}
-.footer-admin{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.1rem;border:1px solid rgba(176,138,74,.55);color:var(--cream);transition:background-color .3s,color .3s,border-color .3s}
-.footer-admin svg{width:13px;height:13px;color:var(--brass);transition:color .3s}
-.footer-admin:hover{background:var(--brass);border-color:var(--brass);color:var(--espresso)}.footer-admin:hover svg{color:var(--espresso)}
 .back-to-top{display:inline-flex;align-items:center;gap:.5rem;background:none;border:0;padding:0;color:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;transition:color .25s}
 .back-to-top svg{width:14px;height:14px;transition:transform .3s}.back-to-top:hover{color:var(--cream)}.back-to-top:hover svg{transform:translateY(-3px)}
 @media(max-width:1023px){.footer-top{grid-template-columns:auto 1fr}.footer-top>a:last-child{grid-column:1/-1;justify-self:start}.footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

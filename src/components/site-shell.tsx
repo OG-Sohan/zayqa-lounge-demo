@@ -24,7 +24,7 @@ function Footer(){const path=useRouterState({select:s=>s.location.pathname}); co
    <div className="footer-col"><p className="footer-heading">Visit</p><address>{street}<br/>{city.join(", ")}</address><Link to="/location" className="footer-arrow-link">Get directions <ArrowUpRight/></Link></div>
    <div className="footer-col"><p className="footer-heading">Hours &amp; contact</p><p>Open daily<br/>{restaurant.hours}</p><a href={`tel:${restaurant.phone.replace(/[^+\d]/g,"")}`}>{restaurant.phone}</a><a href={`mailto:${restaurant.email}`}>{restaurant.email}</a></div>
   </div>
-  <div className="footer-bottom"><span>© 2026 Zayqa Lounge</span><div className="footer-legal"><span>Instagram</span><span>Privacy</span><span>Terms</span></div><div className="footer-actions"><Link to="/admin" className="footer-admin"><LockKeyhole/>Admin</Link><button type="button" className="back-to-top" onClick={scrollToTop}>Back to top <ArrowUp/></button></div></div>
+  <div className="footer-bottom"><span>© 2026 Zayqa Lounge</span><div className="footer-legal"><span>Instagram</span><span>Privacy</span><span>Terms</span></div><div className="footer-actions"><button type="button" className="back-to-top" onClick={scrollToTop}>Back to top <ArrowUp/></button></div></div>
  </footer>}
 function ShellInner({children}:{children:ReactNode}){const path=useRouterState({select:s=>s.location.pathname});
  const signIn=path==="/auth",management=path.startsWith("/admin");
