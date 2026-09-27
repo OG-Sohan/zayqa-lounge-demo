@@ -202,7 +202,7 @@ function Admin() {
         </section>}
         {active === "enquiries" && <section><h2 className="text-5xl">Enquiries</h2>
           {!data.enquiries.length && <p className="mt-6 text-muted-foreground">No enquiries yet.</p>}
-          <div className="mt-6 grid gap-4 lg:grid-cols-2">{data.enquiries.map((enquiry) => <article key={enquiry.id} className="border border-border bg-background p-5">
+          <div className="mt-6 grid gap-4 lg:grid-cols-2">{data.enquiries.map((enquiry) => <article key={enquiry.id} className="premium-card border border-border bg-card p-5">
             <div className="flex justify-between gap-4"><p className="text-xs uppercase text-burgundy">{pretty(enquiry.kind)}</p><Button type="button" variant="ghost" size="icon" disabled={busy} onClick={() => { if (confirm(`Remove the enquiry from ${enquiry.name}?`)) void run(() => deleteEnquiry({ data: { id: enquiry.id } }), "Enquiry removed."); }} aria-label={`Remove enquiry from ${enquiry.name}`}><Trash2/></Button></div>
             <h3 className="mt-2 text-3xl">{enquiry.name}</h3>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">{enquiry.email} · {enquiry.phone ?? "No phone"}</p>
@@ -239,7 +239,7 @@ function Admin() {
 }
 
 function DishEditor({ dish, setDish, submitDish, categories, busy, onNew }: { dish: EditableDish; setDish: (dish: EditableDish) => void; submitDish: (event: FormEvent<HTMLFormElement>) => void; categories: Overview["categories"]; busy: boolean; onNew: () => void }) {
-  return <form onSubmit={submitDish} className="self-start border border-border bg-background p-5 xl:sticky xl:top-24">
+  return <form onSubmit={submitDish} className="premium-card self-start border border-border bg-card p-5 xl:sticky xl:top-24">
     <div className="flex items-start justify-between gap-3"><div><p className="text-xs uppercase tracking-[0.18em] text-burgundy">Dish editor</p><h2 className="mt-2 text-4xl">{dish.id ? "Edit dish" : "Add dish"}</h2></div><Button type="button" variant="editorial" onClick={onNew}><Plus/>New</Button></div>
     <div className="mt-6 grid gap-4">
       <AdminField label="Dish name" name="dish-name" value={dish.name} onChange={(value) => setDish({ ...dish, name: value })}/>

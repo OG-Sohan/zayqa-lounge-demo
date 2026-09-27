@@ -63,7 +63,7 @@ function AuthPage() {
         <p className="text-xs uppercase tracking-[0.18em] text-burgundy">Optional account</p>
         <h1 className="mt-4 text-6xl">Welcome to Zayqa.</h1>
         <p className="mt-4 text-muted-foreground">You never need an account to order or reserve. Sign in only to keep your history together.</p>
-        <div className="mt-8 border border-input p-4 text-sm">
+        <div className="premium-card mt-8 border border-input p-4 text-sm">
           <p className="text-xs uppercase tracking-[0.18em] text-burgundy">Demo admin access</p>
           <p className="mt-2">Email: <strong>{DEMO_EMAIL}</strong></p>
           <p>Password: <strong>{DEMO_PASSWORD}</strong></p>
