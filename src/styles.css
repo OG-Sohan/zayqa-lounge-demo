@@ -83,3 +83,9 @@
 .back-to-top svg{width:14px;height:14px;transition:transform .3s}.back-to-top:hover{color:var(--cream)}.back-to-top:hover svg{transform:translateY(-3px)}
 @media(max-width:1023px){.footer-top{grid-template-columns:auto 1fr}.footer-top>a:last-child{grid-column:1/-1;justify-self:start}.footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:767px){.site-footer{padding:4.5rem 1.25rem 6rem}.footer-top{grid-template-columns:1fr;justify-items:center;text-align:center}.footer-tagline{padding:1.25rem 0 0;border-left:0;border-top:1px solid rgba(176,138,74,.45)}.footer-top>a:last-child{justify-self:stretch}.footer-grid{gap:2.5rem 1.5rem}.footer-bottom{flex-direction:column;align-items:flex-start}}
+/* Premium interactive surfaces */
+select option{background:var(--cream-dark);color:var(--espresso)}
+.date-input-wrap{display:block;position:relative}
+.date-input-wrap>svg{position:absolute;right:.9rem;top:50%;width:18px;height:18px;transform:translateY(-50%);pointer-events:none;color:var(--burgundy)}
+.premium-card{background:var(--cream-dark);border-top-color:var(--olive)!important;box-shadow:0 22px 52px -42px var(--espresso)}
+.control-room article.bg-background,.control-room form.bg-background{background:var(--cream-dark);border-top:3px solid var(--olive);box-shadow:0 22px 52px -42px var(--espresso)}
