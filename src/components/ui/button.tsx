@@ -20,6 +20,7 @@ const buttonVariants = cva(
         cream: "bg-cream text-olive hover:bg-cream/90",
         creamOutline: "border border-cream/60 text-cream hover:bg-cream hover:text-olive",
         burgundy: "bg-burgundy text-cream hover:bg-burgundy/90",
+        editorial: "border border-current bg-transparent shadow-none hover:bg-foreground hover:text-background",
         text: "px-0 text-foreground underline decoration-brass underline-offset-4 hover:text-burgundy",
       },
       size: {

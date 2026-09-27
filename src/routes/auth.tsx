@@ -1,98 +1,80 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
-import { DEMO_ADMIN, isDemoAdmin } from "@/lib/demo-admin";
-import { ensureDemoAdmin } from "@/lib/demo-admin.functions";
+import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { images } from "@/lib/zayqa-data";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { ensureDemoAccount, DEMO_EMAIL, DEMO_PASSWORD } from "@/lib/demo.functions";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>) => ({
-    next: typeof s["next"] === "string" && s["next"].startsWith("/") && !s["next"].startsWith("//") ? s["next"] : "/account",
-  }),
-  head: () => ({ meta: [{ title: "Sign In — Zayqa Lounge" }, { name: "robots", content: "noindex" }] }),
-  component: Auth,
+  ssr: false,
+  head: () => ({ meta: [
+    { title: "Account — Zayqa Lounge" },
+    { name: "description", content: "Sign in to your optional Zayqa Lounge account." },
+    { name: "robots", content: "noindex" },
+    { property: "og:title", content: "Your Zayqa Account" },
+    { property: "og:description", content: "View saved orders and reservations." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
+  component: AuthPage,
 });
 
-async function hasAdminRole(userId: string) {
-  const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
-  return !!data;
-}
-
-function Auth() {
-  const { next } = Route.useSearch();
-  const nav = useNavigate();
-  const ownerLogin = next.startsWith("/admin");
-  const setUpDemoAdmin = useServerFn(ensureDemoAdmin);
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [error, setError] = useState("");
+function AuthPage() {
+  const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const navigate = useNavigate();
+  const ensureDemo = useServerFn(ensureDemoAccount);
 
-  async function signInDemoOwner(email: string, password: string) {
-    let result = await supabase.auth.signInWithPassword({ email, password });
-    if (!result.error && (await hasAdminRole(result.data.user.id))) return result;
-    let setupError = "";
-    try {
-      await setUpDemoAdmin();
-    } catch (err) {
-      setupError = err instanceof Error ? err.message : String(err);
-    }
-    result = await supabase.auth.signInWithPassword({ email, password });
-    if (setupError && (result.error || !(await hasAdminRole(result.data.user.id))))
-      throw new Error(`The demo owner account couldn't be set up on this server (${setupError}).`);
-    return result;
-  }
-
-  async function submit(e: React.FormEvent<HTMLFormElement>) {
+  async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setBusy(true);
-    setError("");
+    setMessage("");
     const f = new FormData(e.currentTarget);
-    const email = String(f.get("email"));
-    const password = String(f.get("password"));
+    const email = String(f.get("email")).trim(), password = String(f.get("password"));
+    const isDemo = email.toLowerCase() === DEMO_EMAIL;
     try {
-      const result =
-        mode === "signup"
-          ? await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin + next } })
-          : ownerLogin && isDemoAdmin(email, password)
-            ? await signInDemoOwner(email.trim().toLowerCase(), password)
-            : await supabase.auth.signInWithPassword({ email, password });
-      if (result.error) setError(result.error.message);
-      else if (mode === "signup" && !result.data.session) setError("Check your email to confirm your account.");
-      else nav({ to: next });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Sign in failed. Please try again.");
+      let setupError = "";
+      if (isDemo) {
+        // The account may already exist from the migration, so a failed setup is only reported if sign-in fails too.
+        try { await ensureDemo(); } catch (err) { setupError = err instanceof Error ? err.message : String(err); }
+      }
+      const result = await supabase.auth.signInWithPassword({ email, password });
+      if (result.error) {
+        setMessage(setupError
+          ? `The demo admin account hasn't been created in the database yet, and this server couldn't create it (${setupError}). Run the demo admin migration in Lovable, or sign in once on the Lovable preview.`
+          : result.error.message);
+        return;
+      }
+      await navigate({ to: isDemo ? "/admin" : "/account" });
+    } catch {
+      setMessage("Sign in failed. Please try again.");
     } finally {
       setBusy(false);
     }
   }
 
-  return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <p className="eyebrow">{ownerLogin ? "Zayqa Lounge · Owner" : "Zayqa Lounge"}</p>
-        <h1>{ownerLogin ? "Owner sign in." : mode === "signin" ? "Welcome back." : "Join us."}</h1>
-        <p>{ownerLogin ? "Manage orders, reservations, the menu and site content." : mode === "signin" ? "Your orders and reservations, all in one place." : "Save your details for an easier evening."}</p>
-        {ownerLogin && (
-          <div className="demo-credentials">
-            <span>Demo access</span>
-            <p>Email <strong>{DEMO_ADMIN.email}</strong></p>
-            <p>Password <strong>{DEMO_ADMIN.password}</strong></p>
-          </div>
-        )}
-        <form onSubmit={submit}>
-          <label>Email<Input name="email" type="email" autoComplete="email" required defaultValue={ownerLogin ? DEMO_ADMIN.email : undefined} /></label>
-          <label>Password<Input name="password" type="password" minLength={8} autoComplete={mode === "signin" ? "current-password" : "new-password"} required defaultValue={ownerLogin ? DEMO_ADMIN.password : undefined} /></label>
-          {error && <p className="form-error" role="alert">{error}</p>}
-          <Button type="submit" disabled={busy}>{busy ? "Please wait…" : ownerLogin ? "Sign in to owner view" : mode === "signin" ? "Sign in" : "Create account"}</Button>
+  return <section className="control-room grid min-h-screen pt-16 lg:grid-cols-2 lg:pt-20">
+    <img src={images.table} alt="A table at Zayqa Lounge" className="hidden h-[calc(100vh-5rem)] w-full object-cover lg:block"/>
+    <div className="flex items-center px-5 py-16 sm:px-12">
+      <div className="mx-auto w-full max-w-md">
+        <p className="text-xs uppercase tracking-[0.18em] text-burgundy">Optional account</p>
+        <h1 className="mt-4 text-6xl">Welcome to Zayqa.</h1>
+        <p className="mt-4 text-muted-foreground">You never need an account to order or reserve. Sign in only to keep your history together.</p>
+        <div className="mt-8 border border-input p-4 text-sm">
+          <p className="text-xs uppercase tracking-[0.18em] text-burgundy">Demo admin access</p>
+          <p className="mt-2">Email: <strong>{DEMO_EMAIL}</strong></p>
+          <p>Password: <strong>{DEMO_PASSWORD}</strong></p>
+        </div>
+        <form onSubmit={submit} className="mt-7 space-y-5">
+          <div><Label htmlFor="email">Email</Label><Input id="email" name="email" defaultValue={DEMO_EMAIL} type="email" autoComplete="email" required className="mt-2 rounded-none"/></div>
+          <div><Label htmlFor="password">Password</Label><Input id="password" name="password" defaultValue={DEMO_PASSWORD} type="password" autoComplete="current-password" minLength={8} required className="mt-2 rounded-none"/></div>
+          {message && <p role="status" className="text-sm text-burgundy">{message}</p>}
+          <Button type="submit" variant="burgundy" size="lg" className="w-full" disabled={busy}>{busy ? "Please wait…" : "Sign in"}</Button>
         </form>
-        {!ownerLogin && (
-          <button className="auth-switch" onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setError(""); }}>
-            {mode === "signin" ? "New to Zayqa? Create an account" : "Already have an account? Sign in"}
-          </button>
-        )}
       </div>
     </div>
-  );
+  </section>;
 }

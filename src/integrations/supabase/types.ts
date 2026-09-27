@@ -331,6 +331,42 @@ export type Database = {
         }
         Relationships: []
       }
+      restaurant_settings: {
+        Row: {
+          address: string
+          email: string
+          hours: string
+          id: string
+          name: string
+          phone: string
+          secondary_phrase: string
+          tagline: string
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          email: string
+          hours: string
+          id?: string
+          name: string
+          phone: string
+          secondary_phrase?: string
+          tagline: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          email?: string
+          hours?: string
+          id?: string
+          name?: string
+          phone?: string
+          secondary_phrase?: string
+          tagline?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           key: string
@@ -378,7 +414,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      app_role: "admin" | "customer"
+      app_role: "admin" | "customer" | "staff" | "manager" | "superadmin"
       fulfilment_type: "pickup" | "delivery"
       order_status:
         | "received"
@@ -516,7 +552,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "customer"],
+      app_role: ["admin", "customer", "staff", "manager", "superadmin"],
       fulfilment_type: ["pickup", "delivery"],
       order_status: [
         "received",

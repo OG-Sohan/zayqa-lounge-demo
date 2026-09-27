@@ -10,9 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as AccountRouteImport } from './routes/account'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthCallbackRouteImport } from './routes/auth-callback'
 import { Route as CartRouteImport } from './routes/cart'
@@ -26,6 +25,8 @@ import { Route as OrderConfirmationRouteImport } from './routes/order-confirmati
 import { Route as PrivateDiningRouteImport } from './routes/private-dining'
 import { Route as ReservationConfirmationRouteImport } from './routes/reservation-confirmation'
 import { Route as ReserveRouteImport } from './routes/reserve'
+import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated.account'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as MenuIndexRouteImport } from './routes/menu.index'
 import { Route as MenuCategoryRouteImport } from './routes/menu.$category'
 import { Route as MenuItemSlugRouteImport } from './routes/menu.item.$slug'
@@ -36,19 +37,13 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AccountRoute = AccountRouteImport.update({
-  id: '/account',
-  path: '/account',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -116,6 +111,16 @@ const ReserveRoute = ReserveRouteImport.update({
   path: '/reserve',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const MenuIndexRoute = MenuIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -140,8 +145,6 @@ const ApiPublicMediaSplatRoute = ApiPublicMediaSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/account': typeof AccountRoute
-  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/auth-callback': typeof AuthCallbackRoute
   '/cart': typeof CartRoute
@@ -155,6 +158,8 @@ export interface FileRoutesByFullPath {
   '/private-dining': typeof PrivateDiningRoute
   '/reservation-confirmation': typeof ReservationConfirmationRoute
   '/reserve': typeof ReserveRoute
+  '/account': typeof AuthenticatedAccountRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/menu/$category': typeof MenuCategoryRoute
   '/menu/': typeof MenuIndexRoute
   '/menu/item/$slug': typeof MenuItemSlugRoute
@@ -163,8 +168,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/account': typeof AccountRoute
-  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/auth-callback': typeof AuthCallbackRoute
   '/cart': typeof CartRoute
@@ -177,6 +180,8 @@ export interface FileRoutesByTo {
   '/private-dining': typeof PrivateDiningRoute
   '/reservation-confirmation': typeof ReservationConfirmationRoute
   '/reserve': typeof ReserveRoute
+  '/account': typeof AuthenticatedAccountRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/menu/$category': typeof MenuCategoryRoute
   '/menu': typeof MenuIndexRoute
   '/menu/item/$slug': typeof MenuItemSlugRoute
@@ -185,9 +190,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
-  '/account': typeof AccountRoute
-  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/auth-callback': typeof AuthCallbackRoute
   '/cart': typeof CartRoute
@@ -201,6 +205,8 @@ export interface FileRoutesById {
   '/private-dining': typeof PrivateDiningRoute
   '/reservation-confirmation': typeof ReservationConfirmationRoute
   '/reserve': typeof ReserveRoute
+  '/_authenticated/account': typeof AuthenticatedAccountRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/menu/$category': typeof MenuCategoryRoute
   '/menu/': typeof MenuIndexRoute
   '/menu/item/$slug': typeof MenuItemSlugRoute
@@ -211,8 +217,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/account'
-    | '/admin'
     | '/auth'
     | '/auth-callback'
     | '/cart'
@@ -226,6 +230,8 @@ export interface FileRouteTypes {
     | '/private-dining'
     | '/reservation-confirmation'
     | '/reserve'
+    | '/account'
+    | '/admin'
     | '/menu/$category'
     | '/menu/'
     | '/menu/item/$slug'
@@ -234,8 +240,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/account'
-    | '/admin'
     | '/auth'
     | '/auth-callback'
     | '/cart'
@@ -248,6 +252,8 @@ export interface FileRouteTypes {
     | '/private-dining'
     | '/reservation-confirmation'
     | '/reserve'
+    | '/account'
+    | '/admin'
     | '/menu/$category'
     | '/menu'
     | '/menu/item/$slug'
@@ -255,9 +261,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/about'
-    | '/account'
-    | '/admin'
     | '/auth'
     | '/auth-callback'
     | '/cart'
@@ -271,6 +276,8 @@ export interface FileRouteTypes {
     | '/private-dining'
     | '/reservation-confirmation'
     | '/reserve'
+    | '/_authenticated/account'
+    | '/_authenticated/admin'
     | '/menu/$category'
     | '/menu/'
     | '/menu/item/$slug'
@@ -279,9 +286,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
-  AccountRoute: typeof AccountRoute
-  AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   CartRoute: typeof CartRoute
@@ -307,25 +313,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/account': {
-      id: '/account'
-      path: '/account'
-      fullPath: '/account'
-      preLoaderRoute: typeof AccountRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -419,6 +418,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReserveRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/account': {
+      id: '/_authenticated/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AuthenticatedAccountRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/menu/': {
       id: '/menu/'
       path: '/'
@@ -450,6 +463,19 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccountRoute: AuthenticatedAccountRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 interface MenuRouteChildren {
   MenuCategoryRoute: typeof MenuCategoryRoute
   MenuIndexRoute: typeof MenuIndexRoute
@@ -466,9 +492,8 @@ const MenuRouteWithChildren = MenuRoute._addFileChildren(MenuRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
-  AccountRoute: AccountRoute,
-  AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   CartRoute: CartRoute,
