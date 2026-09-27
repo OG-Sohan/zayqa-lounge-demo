@@ -112,3 +112,8 @@ select option{background:var(--cream-dark);color:var(--espresso)}
 .calendar-actions{display:flex;justify-content:space-between;border-top:1px solid color-mix(in srgb,var(--espresso) 16%,transparent);padding:.35rem 1rem .55rem}
 .calendar-actions button{font-size:.66rem;letter-spacing:.1em}
 @media(max-width:430px){.zayqa-calendar-popover [data-slot="calendar"]{--cell-size:2.4rem;padding:.8rem}.zayqa-calendar-popover{max-width:calc(100vw - 24px)}}
+/* Keep the complete calendar visible on short laptop and tablet screens. */
+.zayqa-calendar-popover [data-slot="calendar"]{--cell-size:2.25rem;padding:.8rem 1rem .7rem}
+.zayqa-calendar-popover .rdp-month{gap:.7rem}
+.zayqa-calendar-popover .rdp-week{margin-top:.25rem}
+@media(max-width:430px){.zayqa-calendar-popover [data-slot="calendar"]{--cell-size:2.25rem;padding:.75rem}.zayqa-calendar-popover .rdp-month{gap:.65rem}}
