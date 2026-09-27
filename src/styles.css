@@ -89,3 +89,26 @@ select option{background:var(--cream-dark);color:var(--espresso)}
 .date-input-wrap>svg{position:absolute;right:.9rem;top:50%;width:18px;height:18px;transform:translateY(-50%);pointer-events:none;color:var(--burgundy)}
 .premium-card{background:var(--cream-dark);border-top-color:var(--olive)!important;box-shadow:0 22px 52px -42px var(--espresso)}
 .control-room article.bg-background,.control-room form.bg-background{background:var(--cream-dark);border-top:3px solid var(--olive);box-shadow:0 22px 52px -42px var(--espresso)}
+/* Zayqa date picker */
+.date-input{width:100%;min-height:52px;justify-content:space-between;border:1px solid color-mix(in srgb,var(--espresso) 24%,transparent);background:color-mix(in srgb,var(--cream) 72%,var(--cream-dark));color:var(--espresso);padding:.75rem .85rem;text-align:left;text-transform:none;font-weight:500;letter-spacing:0;box-shadow:none}
+.date-input:hover,.date-input[data-state="open"]{border-color:var(--burgundy);background:var(--cream);color:var(--espresso);box-shadow:inset 3px 0 0 var(--burgundy)}
+.date-input-empty{color:var(--muted-foreground)}
+.date-input>svg{width:18px;height:18px;color:var(--burgundy)}
+.zayqa-calendar-popover{overflow:hidden;border:1px solid color-mix(in srgb,var(--olive) 34%,transparent);background:var(--cream);color:var(--espresso);box-shadow:0 28px 70px -28px var(--espresso)}
+.calendar-brand{display:flex;align-items:end;justify-content:space-between;gap:2rem;background:var(--olive);color:var(--cream);padding:.8rem 1rem;border-bottom:2px solid var(--brass)}
+.calendar-brand span{font:600 1.05rem "Cormorant Garamond",serif;letter-spacing:.14em}
+.calendar-brand small{text-transform:uppercase;font-size:.6rem;letter-spacing:.14em;opacity:.75}
+.zayqa-calendar-popover [data-slot="calendar"]{--cell-size:2.55rem;background:var(--cream);padding:1rem}
+.zayqa-calendar-popover .rdp-month_caption{font:600 1.18rem "Cormorant Garamond",serif;letter-spacing:0}
+.zayqa-calendar-popover .rdp-weekday{font:600 .66rem Manrope,sans-serif;text-transform:uppercase;letter-spacing:.08em;color:var(--burgundy)}
+.zayqa-calendar-popover .rdp-day button{border:1px solid transparent;transition:background-color .18s,color .18s,border-color .18s}
+.zayqa-calendar-popover .rdp-day button:hover{border-color:color-mix(in srgb,var(--olive) 32%,transparent);background:var(--cream-dark);color:var(--espresso)}
+.zayqa-calendar-popover .rdp-today:not([data-selected="true"]) button{border-color:var(--brass);background:transparent;color:var(--burgundy);font-weight:700}
+.zayqa-calendar-popover .rdp-selected button{background:var(--burgundy)!important;color:var(--cream)!important}
+.zayqa-calendar-popover .rdp-outside{opacity:.38}
+.zayqa-calendar-popover .rdp-disabled{opacity:.24}
+.zayqa-calendar-popover .rdp-button_previous,.zayqa-calendar-popover .rdp-button_next{border:1px solid color-mix(in srgb,var(--olive) 22%,transparent);background:transparent;color:var(--olive)}
+.zayqa-calendar-popover .rdp-button_previous:hover,.zayqa-calendar-popover .rdp-button_next:hover{background:var(--olive);color:var(--cream)}
+.calendar-actions{display:flex;justify-content:space-between;border-top:1px solid color-mix(in srgb,var(--espresso) 16%,transparent);padding:.35rem 1rem .55rem}
+.calendar-actions button{font-size:.66rem;letter-spacing:.1em}
+@media(max-width:430px){.zayqa-calendar-popover [data-slot="calendar"]{--cell-size:2.4rem;padding:.8rem}.zayqa-calendar-popover{max-width:calc(100vw - 24px)}}
