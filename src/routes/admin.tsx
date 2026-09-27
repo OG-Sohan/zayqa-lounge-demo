@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
-import { money } from "@/lib/zayqa-data";
+import { localDateKey, money } from "@/lib/zayqa-data";
 import {
   deleteMenuItem,
   getAdminDashboard,
@@ -43,22 +43,46 @@ type Tab = "overview" | "orders" | "reservations" | "menu" | "enquiries" | "cont
 
 const pretty = (s: string) => s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
+async function runAction(setBusy: (id: string) => void, id: string, action: () => Promise<unknown>, onChanged: () => void) {
+  setBusy(id);
+  try {
+    await action();
+    onChanged();
+  } catch (err) {
+    alert(err instanceof Error ? err.message : "That change didn't save. Please try again.");
+  } finally {
+    setBusy("");
+  }
+}
+
 function Admin() {
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [tab, setTab] = useState<Tab>("overview");
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const fetchDashboard = useServerFn(getAdminDashboard);
 
-  useState(() => {
+  useEffect(() => {
+    let cancelled = false;
     (async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
-      if (!data.user) { setIsAdmin(false); return; }
-      const { data: role } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id).eq("role", "admin").maybeSingle();
-      setIsAdmin(!!role);
+      try {
+        const { data } = await supabase.auth.getUser();
+        if (cancelled) return;
+        setUser(data.user);
+        if (!data.user) { setIsAdmin(false); return; }
+        const { data: role } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id).eq("role", "admin").maybeSingle();
+        if (!cancelled) setIsAdmin(!!role);
+      } catch {
+        if (!cancelled) { setUser(null); setIsAdmin(false); }
+      }
     })();
-  });
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (user === null) navigate({ to: "/auth", search: { next: "/admin" }, replace: true });
+  }, [user, navigate]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["admin-dashboard"],
@@ -66,22 +90,17 @@ function Admin() {
     enabled: isAdmin === true,
   });
 
-  if (user === undefined || isAdmin === null)
-    return <div className="confirmation"><h1>Opening owner view…</h1></div>;
-  if (!user)
-    return (
-      <div className="empty-state page">
-        <h1>Owner sign in</h1>
-        <p>This area is for the Zayqa team.</p>
-        <Button asChild><Link to="/auth" search={{ next: "/admin" }}>Sign in</Link></Button>
-      </div>
-    );
+  if (user === undefined || isAdmin === null || !user)
+    return <div className="confirmation"><h1>{user === null ? "Opening owner sign in…" : "Opening owner view…"}</h1></div>;
   if (!isAdmin)
     return (
       <div className="empty-state page">
         <h1>Private area</h1>
         <p>{user.email} does not have owner access.</p>
-        <Button asChild><Link to="/">Return to the restaurant</Link></Button>
+        <div className="button-pair">
+          <Button onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/auth", search: { next: "/admin" } }); }}>Sign in as owner</Button>
+          <Button asChild variant="outline"><Link to="/">Return to the restaurant</Link></Button>
+        </div>
       </div>
     );
 
@@ -130,8 +149,8 @@ function Admin() {
 }
 
 function Overview({ data, activeOrders, upcoming, newEnquiries, go }: { data: Dashboard; activeOrders: number; upcoming: number; newEnquiries: number; go: (t: Tab) => void }) {
-  const today = new Date().toISOString().slice(0, 10);
-  const todayOrders = data.orders.filter((o) => o.created_at.slice(0, 10) === today);
+  const today = localDateKey();
+  const todayOrders = data.orders.filter((o) => localDateKey(new Date(o.created_at)) === today);
   const revenue = todayOrders.filter((o) => o.status !== "cancelled").reduce((s, o) => s + Number(o.total), 0);
   return (
     <>
@@ -173,7 +192,7 @@ function Orders({ data, onChanged }: { data: Dashboard; onChanged: () => void })
               </div>
               <div className="admin-card-side">
                 <strong>{money(Number(o.total))}</strong>
-                <select value={o.status} disabled={busy === o.id} onChange={async (e) => { setBusy(o.id); await setStatus({ data: { id: o.id, status: e.target.value as typeof ORDER_STATUSES[number] } }); setBusy(""); onChanged(); }}>
+                <select value={o.status} disabled={busy === o.id} onChange={(e) => { const status = e.target.value as typeof ORDER_STATUSES[number]; runAction(setBusy, o.id, () => setStatus({ data: { id: o.id, status } }), onChanged); }}>
                   {ORDER_STATUSES.map((s) => <option key={s} value={s}>{pretty(s)}</option>)}
                 </select>
               </div>
@@ -210,7 +229,7 @@ function Reservations({ data, onChanged }: { data: Dashboard; onChanged: () => v
                 {r.notes && <p>“{r.notes}”</p>}
               </div>
               <div className="admin-card-side">
-                <select value={r.status} disabled={busy === r.id} onChange={async (e) => { setBusy(r.id); await setStatus({ data: { id: r.id, status: e.target.value as typeof RESERVATION_STATUSES[number] } }); setBusy(""); onChanged(); }}>
+                <select value={r.status} disabled={busy === r.id} onChange={(e) => { const status = e.target.value as typeof RESERVATION_STATUSES[number]; runAction(setBusy, r.id, () => setStatus({ data: { id: r.id, status } }), onChanged); }}>
                   {RESERVATION_STATUSES.map((s) => <option key={s} value={s}>{pretty(s)}</option>)}
                 </select>
               </div>
@@ -241,7 +260,7 @@ function Enquiries({ data, onChanged }: { data: Dashboard; onChanged: () => void
                 <p>“{e.message}”</p>
               </div>
               <div className="admin-card-side">
-                <select value={e.status} disabled={busy === e.id} onChange={async (ev) => { setBusy(e.id); await setStatus({ data: { id: e.id, status: ev.target.value as typeof ENQUIRY_STATUSES[number] } }); setBusy(""); onChanged(); }}>
+                <select value={e.status} disabled={busy === e.id} onChange={(ev) => { const status = ev.target.value as typeof ENQUIRY_STATUSES[number]; runAction(setBusy, e.id, () => setStatus({ data: { id: e.id, status } }), onChanged); }}>
                   {ENQUIRY_STATUSES.map((s) => <option key={s} value={s}>{pretty(s)}</option>)}
                 </select>
               </div>
@@ -383,7 +402,7 @@ function MenuManager({ data, onChanged }: { data: Dashboard; onChanged: () => vo
                   </div>
                   <div className="admin-card-side admin-card-actions">
                     <Button variant="outline" onClick={() => setEditing({ ...i, ingredients: i.ingredients ?? [], allergens: i.allergens ?? [], dietary: i.dietary ?? [], add_ons: (i.add_ons as { name: string; price: number }[]) ?? [] })}>Edit</Button>
-                    <Button variant="text" disabled={busy} onClick={async () => { if (!confirm(`Remove ${i.name} from the menu?`)) return; setBusy(true); await remove({ data: { id: i.id } }); setBusy(false); onChanged(); }}>Remove</Button>
+                    <Button variant="text" disabled={busy} onClick={() => { if (!confirm(`Remove ${i.name} from the menu?`)) return; runAction((id) => setBusy(!!id), i.id, () => remove({ data: { id: i.id } }), onChanged); }}>Remove</Button>
                   </div>
                 </div>
               </article>
@@ -521,12 +540,12 @@ function ImagesManager() {
           <figure key={m.name}>
             <img src={m.url} alt={m.name} loading="lazy" />
             <figcaption>{m.name}</figcaption>
-            <Button variant="text" disabled={busy} onClick={async () => {
+            <Button variant="text" disabled={busy} onClick={() => {
               if (!confirm("Remove this photograph?")) return;
-              setBusy(true);
-              await supabase.storage.from("site-media").remove([m.name]);
-              setBusy(false);
-              queryClient.invalidateQueries({ queryKey: ["site-media"] });
+              runAction((id) => setBusy(!!id), m.name, async () => {
+                const { error } = await supabase.storage.from("site-media").remove([m.name]);
+                if (error) throw new Error(error.message);
+              }, () => queryClient.invalidateQueries({ queryKey: ["site-media"] }));
             }}>Remove</Button>
           </figure>
         ))}

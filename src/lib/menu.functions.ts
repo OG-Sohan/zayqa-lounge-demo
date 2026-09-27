@@ -21,16 +21,13 @@ export const getPublicMenu = createServerFn({ method: "GET" }).handler(async ():
     },
   });
   const [{ data: cats, error: catErr }, { data: items, error: itemErr }] = await Promise.all([
-    supabase.from("menu_categories").select("slug, name, description, sort_order").eq("is_available", true).order("sort_order"),
+    supabase.from("menu_categories").select("id, slug, name, description, sort_order, is_available").order("sort_order"),
     supabase.from("menu_items").select("slug, name, description, price, image_key, image_url, ingredients, allergens, dietary, add_ons, is_featured, category_id").eq("is_available", true),
   ]);
   if (catErr) throw new Error(catErr.message);
   if (itemErr) throw new Error(itemErr.message);
-  const catIdToSlug = new Map<string, string>();
-  // category slug lookup needs ids; refetch with ids
-  const { data: catIds } = await supabase.from("menu_categories").select("id, slug");
-  for (const c of catIds ?? []) catIdToSlug.set(c.id, c.slug);
-  const categories: MenuCategoryInfo[] = (cats ?? []).map((c) => ({
+  const catIdToSlug = new Map((cats ?? []).map((c) => [c.id, c.slug]));
+  const categories: MenuCategoryInfo[] = (cats ?? []).filter((c) => c.is_available).map((c) => ({
     slug: c.slug as CategorySlug,
     name: c.name,
     intro: c.description ?? "",

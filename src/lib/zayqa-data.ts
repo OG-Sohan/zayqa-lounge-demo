@@ -64,4 +64,10 @@ export const reviews: { quote: string; name: string; detail: string }[] = [
   { quote: "Our go-to for every occasion that matters.", name: "Rachel T.", detail: "Guest note" },
 ];
 export const featured = [dishes[2], dishes[6], dishes[4], dishes[8]] as Dish[];
-export const money = (value:number) => `$${value.toFixed(0)}`;
+export const money = (value:number) => `$${value.toFixed(Number.isInteger(value)?0:2)}`;
+/** Today's date as YYYY-MM-DD in the visitor's own timezone (toISOString() would give the UTC date). */
+export const localDateKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+/** "2026-10-02" -> "Friday, 2 October". Parsed as a local date so it never shifts by a day. */
+/** Database times come back as "20:00:00"; show them as "8:00 PM". */
+export const formatTime = (t:string) => { const m=t.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/); if(!m) return t; const h=Number(m[1]); return `${h%12||12}:${m[2]} ${h<12?"AM":"PM"}` };
+export const formatDate = (key:string) => { const [y,m,d]=key.split("-").map(Number); if(!y||!m||!d) return key; return new Date(y,m-1,d).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"}) };
