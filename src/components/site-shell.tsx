@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ArrowUp, ArrowUpRight, LockKeyhole, Menu, ShoppingBag, X } from "lucide-react";
+import { ArrowUp, ArrowUpRight, Menu, ShoppingBag, X } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -20,7 +20,7 @@ function Footer(){const path=useRouterState({select:s=>s.location.pathname}); co
   <div className="footer-top"><HomeLink className="footer-brand">ZAYQA<small>LOUNGE</small></HomeLink><p className="footer-tagline">{restaurant.tagline}.</p>{path!=="/"&&<Button asChild variant="cream"><Link to="/reserve">Reserve a table</Link></Button>}</div>
   <div className="footer-grid">
    <div className="footer-col"><p className="footer-heading">Explore</p>{nav.map(n=><Link key={n.to} to={n.to}>{n.label}</Link>)}</div>
-   <div className="footer-col"><p className="footer-heading">Dine with us</p><Link to="/reserve">Reservations</Link><Link to="/menu">Order online</Link><Link to="/contact">Contact</Link><Link to="/account">My account</Link></div>
+   <div className="footer-col"><p className="footer-heading">Dine with us</p><Link to="/reserve">Reservations</Link><Link to="/menu">Order online</Link><Link to="/contact">Contact</Link><Link to="/account">My account</Link><Link to="/admin">Admin</Link></div>
    <div className="footer-col"><p className="footer-heading">Visit</p><address>{street}<br/>{city.join(", ")}</address><Link to="/location" className="footer-arrow-link">Get directions <ArrowUpRight/></Link></div>
    <div className="footer-col"><p className="footer-heading">Hours &amp; contact</p><p>Open daily<br/>{restaurant.hours}</p><a href={`tel:${restaurant.phone.replace(/[^+\d]/g,"")}`}>{restaurant.phone}</a><a href={`mailto:${restaurant.email}`}>{restaurant.email}</a></div>
   </div>
