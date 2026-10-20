@@ -9,4 +9,6 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Use the shared `DateInput` for date fields so clicking anywhere opens the native picker; this keeps date interactions consistent and accessible.
+- Use shared DateInput date strips and the branded calendar, hospitality time chips and party steppers to preserve form names and controlled prefilling without native pickers.
+- MotionExperience owns the passive-scroll rAF and observer lifecycle; effects are viewport-gated and reduced-motion is the only static fallback.
+- Dish photo assignment uses slug-specific optimized images or unique owner uploads; missing/repeated photos render as text-only dishes.
