@@ -1,0 +1,8 @@
+import type { SVGProps } from "react";
+type Props = SVGProps<SVGSVGElement>;
+export function ArrowIcon({direction="right",...props}:Props & {direction?:"right"|"left"|"up"|"down"|"diagonal"}){return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" {...props}><g transform={direction==="left"?"rotate(180 12 12)":direction==="up"?"rotate(-90 12 12)":direction==="down"?"rotate(90 12 12)":direction==="diagonal"?"rotate(-45 12 12)":undefined}><path d="M4 12h15M13 5l7 7-7 7"/></g></svg>}
+export function BagIcon(props:Props){return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" {...props}><path d="M5 7h14l1 14H4L5 7Z M8 8V6a4 4 0 0 1 8 0v2"/></svg>}
+export function MenuIcon(props:Props){return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" {...props}><path d="M3 8h18M3 16h18"/></svg>}
+export function CloseIcon(props:Props){return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" {...props}><path d="m6 6 12 12M6 18 18 6"/></svg>}
+export function CalendarIcon(props:Props){return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" {...props}><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M7 3v5M17 3v5M3 10h18"/></svg>}
+export function StepIcon({minus=false,...props}:Props & {minus?:boolean}){return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" {...props}><path d="M5 12h14"/>{!minus&&<path d="M12 5v14"/>}</svg>}

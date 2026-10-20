@@ -1,0 +1,7 @@
+export function orderFeedback(source?:HTMLElement|null,image?:string){
+ if(typeof window==="undefined")return;
+ const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+ const target=document.querySelector<HTMLElement>("[data-cart-target]");
+ if(!reduced&&source&&target){const a=source.getBoundingClientRect(),b=target.getBoundingClientRect();const flyer=document.createElement("div");flyer.className="order-flyer";if(image){const img=document.createElement("img");img.src=image;img.alt="";flyer.append(img)}flyer.style.left=`${a.left+a.width/2-18}px`;flyer.style.top=`${a.top+a.height/2-18}px`;document.body.append(flyer);const dx=b.left+b.width/2-a.left-a.width/2,dy=b.top+b.height/2-a.top-a.height/2;const animation=flyer.animate([{transform:"translate(0,0) scale(1)",opacity:1},{transform:`translate(${dx*.45}px,${dy*.45-100}px) scale(.7)`,opacity:1,offset:.45},{transform:`translate(${dx}px,${dy}px) scale(.15)`,opacity:.3}],{duration:700,easing:"cubic-bezier(.3,.1,.5,1)"});animation.onfinish=()=>{flyer.remove();target.querySelector("[data-cart-count]")?.animate([{transform:"scale(1)"},{transform:"scale(1.15)"},{transform:"scale(1)"}],{duration:300})}}
+ if(!reduced)navigator.vibrate?.(8);
+}
