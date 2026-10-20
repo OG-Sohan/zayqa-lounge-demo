@@ -36,6 +36,7 @@ const DateInput = React.forwardRef<HTMLInputElement, DateInputProps>(
     const calendar = <>
           <div className="calendar-brand"><span>ZAYQA</span><small>Select a date</small></div>
           <Calendar
+            key={dateValue || String(min ?? "today")}
             mode="single"
             selected={selected}
             {...(initialMonth ? {defaultMonth: initialMonth} : {})}

@@ -2,7 +2,7 @@ import { OptionSelect } from "@/components/hospitality-controls";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
-import { Edit3, LogOut, Plus, ShieldCheck, Trash2 } from "lucide-react";
+import { EditIcon as Edit3, ExitIcon as LogOut, StepIcon as Plus, ShieldIcon as ShieldCheck, TrashIcon as Trash2 } from "@/components/zayqa-icons";
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

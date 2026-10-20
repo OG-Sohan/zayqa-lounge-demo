@@ -3,7 +3,8 @@ import { useRouterState } from "@tanstack/react-router";
 export function MotionExperience(){const path=useRouterState({select:s=>s.location.pathname});const progress=useRef<HTMLDivElement>(null),evening=useRef<HTMLDivElement>(null),halo=useRef<HTMLDivElement>(null);
  useEffect(()=>{
   const reduced=matchMedia("(prefers-reduced-motion: reduce)");let cleanup=()=>{};
-  const setup=()=>{cleanup();if(reduced.matches){document.querySelectorAll(".motion-pending").forEach(el=>el.classList.remove("motion-pending"));return}
+  const updateBar=()=>{const mobile=document.querySelector<HTMLElement>(".mobile-hospitality");if(!mobile)return;const footer=document.querySelector(".site-footer")?.getBoundingClientRect();const hero=document.querySelector(".hero");const afterHero=hero?hero.getBoundingClientRect().bottom<innerHeight*.45:scrollY>180;mobile.classList.toggle("is-visible",afterHero&&(!footer||footer.top>innerHeight)&&!document.activeElement?.matches("input,textarea,[role=combobox]"))};
+  const setup=()=>{cleanup();if(reduced.matches){document.querySelectorAll(".motion-pending").forEach(el=>el.classList.remove("motion-pending"));updateBar();addEventListener("scroll",updateBar,{passive:true});addEventListener("focusin",updateBar);addEventListener("focusout",updateBar);cleanup=()=>{removeEventListener("scroll",updateBar);removeEventListener("focusin",updateBar);removeEventListener("focusout",updateBar)};return}
    const main=document.querySelector("main");if(!main)return;
    let frame=0,last=scrollY,lastTick=0,slow=0,pointerFrame=0;let px=0,py=0,hx=0,hy=0;
    const active=new Set<Element>();const linked=[...document.querySelectorAll(".hero,.atmosphere,.signature-scroll,.review-marquee")];
