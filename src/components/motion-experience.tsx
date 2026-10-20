@@ -34,7 +34,7 @@ export function MotionExperience(){const path=useRouterState({select:s=>s.locati
    function follow(){pointerFrame=0;hx+=(px-hx)*.12;hy+=(py-hy)*.12;if(halo.current)halo.current.style.transform=`translate(${hx-160}px,${hy-160}px)`;if(Math.abs(px-hx)+Math.abs(py-hy)>1)pointerFrame=requestAnimationFrame(follow)}
    addEventListener("scroll",schedule,{passive:true});addEventListener("resize",schedule);addEventListener("pointermove",pointer,{passive:true});addEventListener("focusin",schedule);addEventListener("focusout",schedule);schedule();
    cleanup=()=>{cancelAnimationFrame(frame);cancelAnimationFrame(pointerFrame);clearTimeout(safety);normal.disconnect();tall.disconnect();near.disconnect();pending.forEach(reveal);removeEventListener("scroll",schedule);removeEventListener("resize",schedule);removeEventListener("pointermove",pointer);removeEventListener("focusin",schedule);removeEventListener("focusout",schedule)};
-  };setup();reduced.addEventListener("change",setup);return()=>{cleanup();reduced.removeEventListener("change",setup)};
+  };const ready=setTimeout(setup,350);reduced.addEventListener("change",setup);return()=>{clearTimeout(ready);cleanup();reduced.removeEventListener("change",setup)};
  },[path]);
  return <><div className="page-scroll-progress" ref={progress} aria-hidden="true"/><div className="evening-overlay" ref={evening} aria-hidden="true"/><svg className="film-grain" aria-hidden="true"><filter id="zayqa-grain"><feTurbulence type="fractalNoise" baseFrequency=".88" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#zayqa-grain)"/></svg><div className="pointer-halo" ref={halo} aria-hidden="true"/></>;
 }

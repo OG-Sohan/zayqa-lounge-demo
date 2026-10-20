@@ -26,6 +26,7 @@ const DateInput = React.forwardRef<HTMLInputElement, DateInputProps>(
     const dateValue = value ?? internalValue;
     const selected = dateValue ? parseISO(dateValue) : undefined;
     const minimum = typeof min === "string" && min ? parseISO(min) : undefined;
+    const initialMonth = selected ?? minimum;
 
     const updateValue = (nextValue: string) => {
       if (value === undefined) setInternalValue(nextValue);
@@ -37,7 +38,7 @@ const DateInput = React.forwardRef<HTMLInputElement, DateInputProps>(
           <Calendar
             mode="single"
             selected={selected}
-            {...((selected ?? minimum) ? {defaultMonth: selected ?? minimum} : {})}
+            {...(initialMonth ? {defaultMonth: initialMonth} : {})}
             disabled={(date)=>parseHours(venue.hours).closed || (!!minimum && date < minimum)}
             onSelect={(date) => {
               if (!date) return;
