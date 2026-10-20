@@ -37,7 +37,7 @@ const DateInput = React.forwardRef<HTMLInputElement, DateInputProps>(
           <Calendar
             mode="single"
             selected={selected}
-            defaultMonth={selected ?? minimum}
+            {...((selected ?? minimum) ? {defaultMonth: selected ?? minimum} : {})}
             disabled={(date)=>parseHours(venue.hours).closed || (!!minimum && date < minimum)}
             onSelect={(date) => {
               if (!date) return;

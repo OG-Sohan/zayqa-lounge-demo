@@ -1,7 +1,8 @@
+import { assignUniquePhotos, dishPhotos } from "@/lib/dish-photos";
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { images, type CategorySlug, type Dish } from "./zayqa-data";
+import { type CategorySlug, type Dish } from "./zayqa-data";
 
 export type MenuDish = Dish & { featured: boolean };
 export type MenuCategoryInfo = { slug: CategorySlug; name: string; intro: string };
@@ -39,12 +40,12 @@ export const getPublicMenu = createServerFn({ method: "GET" }).handler(async ():
     description: i.description,
     longDescription: i.description,
     price: Number(i.price),
-    image: i.image_url ?? (images[(i.image_key as keyof typeof images) ?? "table"] ?? images.table),
+    image: i.image_url || dishPhotos[i.slug] || "",
     ingredients: i.ingredients ?? [],
     allergens: i.allergens ?? [],
     dietary: i.dietary ?? [],
     addOns: (i.add_ons as { name: string; price: number }[]) ?? [],
     featured: i.is_featured,
   }));
-  return { categories, dishes };
+  return { categories, dishes: assignUniquePhotos(dishes) };
 });
