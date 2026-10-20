@@ -10,9 +10,11 @@
 - [x] Restyle flat cards and controls with premium brand surfaces
 - [x] Make date fields fully clickable across customer forms
 - [x] Verify reservation and form layouts on desktop, tablet, and mobile
-- [ ] Unique photography for six prominent dishes; text-only remaining dishes
-- [ ] Touch-adapted hero, scroll signatures, atmosphere, reveals and global motion
-- [ ] Ordering feedback, mobile cart sheet and floating hospitality bar
-- [ ] Branded date/time/option controls and preserved existing flows
-- [ ] Responsive browser checks, accessibility and reduced-motion validation
+- [x] Unique photography for six prominent dishes; text-only remaining dishes
+- [x] Touch-adapted hero, scroll signatures, atmosphere, reveals and global motion
+- [x] Ordering feedback, mobile cart sheet and floating hospitality bar
+- [x] Branded date/time/option controls and preserved existing flows
+- [x] Responsive browser checks, accessibility and reduced-motion validation
 - [ ] Real iPhone Safari and Android device validation (requires physical devices)
+
+- [ ] Owner-only management readback verification (current signed-in account lacks management access)
