@@ -15,7 +15,7 @@ export function MotionExperience(){const path=useRouterState({select:s=>s.locati
    main.querySelectorAll<HTMLElement>("h2:not(.control-room h2):not(.atmosphere h2), img:not(.hero img):not(.signature-track img):not(.atmosphere img), .menu-category .dish-card").forEach((el,index)=>{
     if(el.closest(".control-room,.lightbox,[role=dialog]")||el.classList.contains("motion-ready"))return;
     el.classList.add("motion-ready");
-    if(el.tagName==="H2"){let line=document.createElement("span");line.className="heading-line";let inner=document.createElement("span");inner.className="heading-line-inner";line.append(inner);const nodes=[...el.childNodes];let n=0;nodes.forEach(node=>{if(node.nodeName==="BR"){el.append(line);line=document.createElement("span");line.className="heading-line";inner=document.createElement("span");inner.className="heading-line-inner";inner.style.transitionDelay=`${++n*120}ms`;line.append(inner);node.remove()}else inner.append(node)});el.append(line)}
+
     if(el.classList.contains("dish-card"))el.style.transitionDelay=`${(index%6)*50}ms`;
     el.classList.add("motion-pending");pending.add(el);(el.getBoundingClientRect().height>innerHeight?tall:normal).observe(el);
    });

@@ -140,3 +140,4 @@ html,body{overflow-x:clip}h1,h2,h3{letter-spacing:0}.home-page,.page,main,.signa
 
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.motion-pending,.heading-line-inner{opacity:1!important;transform:none!important}.hero img{transform:none!important}.mobile-hospitality{opacity:1;pointer-events:auto}.mobile-hospitality:not(.is-visible){display:none}}
 .hero h1 .hero-line>span,.hero h1 .hero-line>em{white-space:normal;letter-spacing:0}.back-link{display:inline-flex;align-items:center;gap:.5rem}.review-track{will-change:auto}
+.heading-line-1 .heading-line-inner{transition-delay:120ms}.heading-line-2 .heading-line-inner{transition-delay:240ms}
