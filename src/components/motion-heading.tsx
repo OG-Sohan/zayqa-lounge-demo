@@ -1,0 +1,2 @@
+import { Children, isValidElement, type HTMLAttributes, type ReactNode } from "react";
+export function MotionHeading({children,...props}:HTMLAttributes<HTMLHeadingElement>){const lines:ReactNode[][]=[[]];Children.forEach(children,node=>{if(isValidElement(node)&&node.type==='br')lines.push([]);else lines[lines.length-1]?.push(node)});return <h2 {...props}>{lines.map((line,i)=><span className={`heading-line heading-line-${i}`} key={i}><span className="heading-line-inner">{line}</span></span>)}</h2>}

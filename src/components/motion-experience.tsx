@@ -3,18 +3,19 @@ import { useRouterState } from "@tanstack/react-router";
 export function MotionExperience(){const path=useRouterState({select:s=>s.location.pathname});const progress=useRef<HTMLDivElement>(null),evening=useRef<HTMLDivElement>(null),halo=useRef<HTMLDivElement>(null);
  useEffect(()=>{
   const reduced=matchMedia("(prefers-reduced-motion: reduce)");let cleanup=()=>{};
-  const setup=()=>{cleanup();if(reduced.matches){document.querySelectorAll(".motion-pending").forEach(el=>el.classList.remove("motion-pending"));return}
-   const main=document.querySelector("main");if(!main)return;
+  const updateBar=()=>{const mobile=document.querySelector<HTMLElement>(".mobile-hospitality");if(!mobile)return;const footer=document.querySelector(".site-footer")?.getBoundingClientRect();const hero=document.querySelector(".hero");const afterHero=hero?hero.getBoundingClientRect().bottom<innerHeight*.45:scrollY>180;mobile.classList.toggle("is-visible",afterHero&&(!footer||footer.top>innerHeight)&&!document.activeElement?.matches("input,textarea,[role=combobox]"))};
+  const setup=()=>{cleanup();if(reduced.matches){document.querySelectorAll(".motion-pending").forEach(el=>el.classList.remove("motion-pending"));updateBar();addEventListener("scroll",updateBar,{passive:true});addEventListener("focusin",updateBar);addEventListener("focusout",updateBar);cleanup=()=>{removeEventListener("scroll",updateBar);removeEventListener("focusin",updateBar);removeEventListener("focusout",updateBar)};return}
+   const main=document.querySelector("main");if(!main)return;main.animate([{opacity:0},{opacity:1}],{duration:350,easing:"ease"});
    let frame=0,last=scrollY,lastTick=0,slow=0,pointerFrame=0;let px=0,py=0,hx=0,hy=0;
    const active=new Set<Element>();const linked=[...document.querySelectorAll(".hero,.atmosphere,.signature-scroll,.review-marquee")];
    const near=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)active.add(e.target);else {active.delete(e.target);e.target.querySelectorAll<HTMLElement>("[data-scrub]").forEach(el=>el.style.willChange="")} });schedule()},{rootMargin:"100% 0px"});linked.forEach(el=>near.observe(el));
    const pending=new Set<Element>();const reveal=(el:Element)=>{el.classList.remove("motion-pending");el.classList.add("motion-visible");pending.delete(el);setTimeout(()=>{(el as HTMLElement).style.willChange=""},1300)};
    const normal=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){reveal(e.target);normal.unobserve(e.target)}}),{threshold:.08,rootMargin:"0px 0px -8% 0px"});
    const tall=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){reveal(e.target);tall.unobserve(e.target)}}),{threshold:.01,rootMargin:"0px 0px -8% 0px"});
-   main.querySelectorAll<HTMLElement>("h2:not(.control-room h2), img:not(.hero img):not(.signature-track img):not(.atmosphere img), .menu-category .dish-card").forEach((el,index)=>{
-    if(el.closest(".control-room,.lightbox")||el.classList.contains("motion-ready"))return;
+   main.querySelectorAll<HTMLElement>("h2:not(.control-room h2):not(.atmosphere h2), img:not(.hero img):not(.signature-track img):not(.atmosphere img), .menu-category .dish-card").forEach((el,index)=>{
+    if(el.closest(".control-room,.lightbox,[role=dialog]")||el.classList.contains("motion-ready"))return;
     el.classList.add("motion-ready");
-    if(el.tagName==="H2"){let line=document.createElement("span");line.className="heading-line";let inner=document.createElement("span");inner.className="heading-line-inner";line.append(inner);const nodes=[...el.childNodes];let n=0;nodes.forEach(node=>{if(node.nodeName==="BR"){el.append(line);line=document.createElement("span");line.className="heading-line";inner=document.createElement("span");inner.className="heading-line-inner";inner.style.transitionDelay=`${++n*120}ms`;line.append(inner);node.remove()}else inner.append(node)});el.append(line)}
+
     if(el.classList.contains("dish-card"))el.style.transitionDelay=`${(index%6)*50}ms`;
     el.classList.add("motion-pending");pending.add(el);(el.getBoundingClientRect().height>innerHeight?tall:normal).observe(el);
    });
@@ -34,7 +35,7 @@ export function MotionExperience(){const path=useRouterState({select:s=>s.locati
    function follow(){pointerFrame=0;hx+=(px-hx)*.12;hy+=(py-hy)*.12;if(halo.current)halo.current.style.transform=`translate(${hx-160}px,${hy-160}px)`;if(Math.abs(px-hx)+Math.abs(py-hy)>1)pointerFrame=requestAnimationFrame(follow)}
    addEventListener("scroll",schedule,{passive:true});addEventListener("resize",schedule);addEventListener("pointermove",pointer,{passive:true});addEventListener("focusin",schedule);addEventListener("focusout",schedule);schedule();
    cleanup=()=>{cancelAnimationFrame(frame);cancelAnimationFrame(pointerFrame);clearTimeout(safety);normal.disconnect();tall.disconnect();near.disconnect();pending.forEach(reveal);removeEventListener("scroll",schedule);removeEventListener("resize",schedule);removeEventListener("pointermove",pointer);removeEventListener("focusin",schedule);removeEventListener("focusout",schedule)};
-  };setup();reduced.addEventListener("change",setup);return()=>{cleanup();reduced.removeEventListener("change",setup)};
+  };const ready=setTimeout(setup,350);reduced.addEventListener("change",setup);return()=>{clearTimeout(ready);cleanup();reduced.removeEventListener("change",setup)};
  },[path]);
  return <><div className="page-scroll-progress" ref={progress} aria-hidden="true"/><div className="evening-overlay" ref={evening} aria-hidden="true"/><svg className="film-grain" aria-hidden="true"><filter id="zayqa-grain"><feTurbulence type="fractalNoise" baseFrequency=".88" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#zayqa-grain)"/></svg><div className="pointer-halo" ref={halo} aria-hidden="true"/></>;
 }

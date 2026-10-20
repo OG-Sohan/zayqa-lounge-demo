@@ -1,6 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";import { useEffect, useState } from "react";import { Check } from "lucide-react";import { Button } from "@/components/ui/button";import { money } from "@/lib/zayqa-data";
+import { createFileRoute, Link } from "@tanstack/react-router";import { useEffect, useState } from "react";import { CheckIcon as Check } from "@/components/zayqa-icons";import { Button } from "@/components/ui/button";import { money } from "@/lib/zayqa-data";
 type Order={number:string;mode:"pickup"|"delivery";total:number};
-export const Route=createFileRoute("/order-confirmation")({head:()=>({meta:[{title:"Order Received — Zayqa Lounge"},{name:"robots",content:"noindex"}]}),component:Confirmation});function Confirmation(){const [order,setOrder]=useState<Order|null|undefined>(undefined);
+export const Route=createFileRoute("/order-confirmation")({head:()=>({meta:[{title:"Order Received — Zayqa Lounge"},{name:"robots",content:"noindex"},{name:"description",content:"Your Zayqa Lounge order confirmation."},{property:"og:title",content:"Order Received — Zayqa Lounge"},{property:"og:description",content:"Your Zayqa Lounge order confirmation."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:Confirmation});function Confirmation(){const [order,setOrder]=useState<Order|null|undefined>(undefined);
  // sessionStorage only exists in the browser; reading it during render makes the server and client HTML disagree.
  useEffect(()=>{let saved:Order|null=null;try{saved=JSON.parse(sessionStorage.getItem("zayqa-order")||"null")}catch{/* ignore corrupt storage */}setOrder(saved?.number?saved:null)},[]);
  if(order===undefined)return <div className="confirmation" aria-busy="true"/>;

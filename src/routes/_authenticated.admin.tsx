@@ -1,7 +1,8 @@
+import { OptionSelect } from "@/components/hospitality-controls";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
-import { Edit3, LogOut, Plus, ShieldCheck, Trash2 } from "lucide-react";
+import { EditIcon as Edit3, ExitIcon as LogOut, StepIcon as Plus, ShieldIcon as ShieldCheck, TrashIcon as Trash2 } from "@/components/zayqa-icons";
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -190,14 +191,14 @@ function Admin() {
           {!data.orders.length && <p className="mt-6 text-muted-foreground">No orders yet.</p>}
           <div className="mt-6 divide-y divide-border border-y border-border">{data.orders.map((order) => <article key={order.id} className="grid gap-4 py-5 lg:grid-cols-[1fr_auto]">
             <div><p className="text-xs uppercase text-burgundy">#{order.reference} · {pretty(order.fulfilment)}{order.requested_time ? ` · ${order.requested_time}` : ""}</p><h3 className="mt-1 text-3xl">{order.customer_name}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{order.phone} · {money(Number(order.total))}{order.address ? ` · ${order.address}` : ""}</p>{order.instructions && <p className="mt-1 text-sm leading-6">“{order.instructions}”</p>}</div>
-            <select value={order.status} disabled={busy} onChange={(event) => { const status = event.target.value as (typeof orderStatuses)[number]; void run(() => setOrderStatus({ data: { id: order.id, status } })); }} className="h-11 border border-input bg-background px-3 text-sm uppercase">{orderStatuses.map((status) => <option key={status} value={status}>{pretty(status)}</option>)}</select>
+            <OptionSelect value={order.status} disabled={busy} onChange={(event) => { const status = event.target.value as (typeof orderStatuses)[number]; void run(() => setOrderStatus({ data: { id: order.id, status } })); }} className="h-11 border border-input bg-background px-3 text-sm uppercase">{orderStatuses.map((status) => <option key={status} value={status}>{pretty(status)}</option>)}</OptionSelect>
           </article>)}</div>
         </section>}
         {active === "reservations" && <section><h2 className="text-5xl">Reservations</h2>
           {!data.reservations.length && <p className="mt-6 text-muted-foreground">No reservations yet.</p>}
           <div className="mt-6 divide-y divide-border border-y border-border">{data.reservations.map((reservation) => <article key={reservation.id} className="grid gap-4 py-5 lg:grid-cols-[1fr_auto]">
             <div><p className="text-xs uppercase text-burgundy">{reservation.reference} · {reservation.reservation_date} · {formatTime(String(reservation.reservation_time))}</p><h3 className="mt-1 text-3xl">{reservation.guest_name}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{reservation.email} · {reservation.phone} · {reservation.guests} guests</p>{reservation.notes && <p className="mt-1 text-sm leading-6">“{reservation.notes}”</p>}</div>
-            <select value={reservation.status} disabled={busy} onChange={(event) => { const status = event.target.value as (typeof reservationStatuses)[number]; void run(() => setReservationStatus({ data: { id: reservation.id, status } })); }} className="h-11 border border-input bg-background px-3 text-sm uppercase">{reservationStatuses.map((status) => <option key={status} value={status}>{status}</option>)}</select>
+            <OptionSelect value={reservation.status} disabled={busy} onChange={(event) => { const status = event.target.value as (typeof reservationStatuses)[number]; void run(() => setReservationStatus({ data: { id: reservation.id, status } })); }} className="h-11 border border-input bg-background px-3 text-sm uppercase">{reservationStatuses.map((status) => <option key={status} value={status}>{status}</option>)}</OptionSelect>
           </article>)}</div>
         </section>}
         {active === "enquiries" && <section><h2 className="text-5xl">Enquiries</h2>
@@ -224,8 +225,8 @@ function Admin() {
         {active === "roles" && <section>
           <div className="flex items-center gap-3"><ShieldCheck className="text-burgundy"/><h2 className="text-5xl">Team access</h2></div>
           <form onSubmit={submitRole} className="mt-6 grid gap-3 border-y border-border py-6 lg:grid-cols-[1fr_220px_auto]">
-            <select name="userId" required aria-label="Team member" className="h-11 border border-input bg-background px-3 text-sm">{data.users.map((user) => <option key={user.id} value={user.id}>{user.email || user.id}</option>)}</select>
-            <select name="role" required aria-label="Role" className="h-11 border border-input bg-background px-3 text-sm uppercase">{roles.map((role) => <option key={role} value={role}>{role}</option>)}</select>
+            <OptionSelect name="userId" required aria-label="Team member" className="h-11 border border-input bg-background px-3 text-sm">{data.users.map((user) => <option key={user.id} value={user.id}>{user.email || user.id}</option>)}</OptionSelect>
+            <OptionSelect name="role" required aria-label="Role" className="h-11 border border-input bg-background px-3 text-sm uppercase">{roles.map((role) => <option key={role} value={role}>{role}</option>)}</OptionSelect>
             <Button variant="burgundy" disabled={busy}><Plus/>Assign role</Button>
           </form>
           <div className="mt-6 divide-y divide-border border-y border-border">{data.roles.map((role) => <div key={role.id} className="grid grid-cols-[1fr_auto] items-center gap-4 py-4">
@@ -245,8 +246,8 @@ function DishEditor({ dish, setDish, submitDish, categories, busy, onNew }: { di
       <AdminField label="Dish name" name="dish-name" value={dish.name} onChange={(value) => setDish({ ...dish, name: value })}/>
       <AdminField label="Slug" name="dish-slug" value={dish.slug} onChange={(value) => setDish({ ...dish, slug: value })}/>
       <div className="grid gap-3 sm:grid-cols-2">
-        <div><Label htmlFor="dish-category">Category</Label><select id="dish-category" value={dish.categoryId} required onChange={(event) => setDish({ ...dish, categoryId: event.target.value })} className="mt-2 h-10 w-full border border-input bg-background px-3 text-sm">{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></div>
-        <div><Label htmlFor="dish-image">Image</Label><select id="dish-image" value={dish.imageUrl ? UPLOADED : dish.imageKey} onChange={(event) => { if (event.target.value !== UPLOADED) setDish({ ...dish, imageKey: event.target.value as MenuImageKey, imageUrl: null }); }} className="mt-2 h-10 w-full border border-input bg-background px-3 text-sm">{dish.imageUrl && <option value={UPLOADED}>uploaded photo</option>}{Object.keys(menuImageKeys).map((key) => <option key={key} value={key}>{key}</option>)}</select></div>
+        <div><Label htmlFor="dish-category">Category</Label><OptionSelect id="dish-category" value={dish.categoryId} required onChange={(event) => setDish({ ...dish, categoryId: event.target.value })} className="mt-2 h-10 w-full border border-input bg-background px-3 text-sm">{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</OptionSelect></div>
+        <div><Label htmlFor="dish-image">Image</Label><OptionSelect id="dish-image" value={dish.imageUrl ? UPLOADED : dish.imageKey} onChange={(event) => { if (event.target.value !== UPLOADED) setDish({ ...dish, imageKey: event.target.value as MenuImageKey, imageUrl: null }); }} className="mt-2 h-10 w-full border border-input bg-background px-3 text-sm">{dish.imageUrl && <option value={UPLOADED}>uploaded photo</option>}{Object.keys(menuImageKeys).map((key) => <option key={key} value={key}>{key}</option>)}</OptionSelect></div>
       </div>
       <AdminField label="Price" name="dish-price" type="number" value={dish.price} onChange={(value) => setDish({ ...dish, price: value })}/>
       <div><Label htmlFor="dish-description">Description</Label><Textarea id="dish-description" value={dish.description} onChange={(event) => setDish({ ...dish, description: event.target.value })} className="mt-2 min-h-28 rounded-none" required/></div>

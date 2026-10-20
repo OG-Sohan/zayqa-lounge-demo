@@ -1,2 +1,2 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-export const Route=createFileRoute("/menu")({component:()=><Outlet/>});
+export const Route=createFileRoute("/menu")({head:()=>({meta:[{title:"Dining Menu — Zayqa Lounge"},{name:"description",content:"Discover the Zayqa Lounge dining menu."},{property:"og:title",content:"Dining Menu — Zayqa Lounge"},{property:"og:description",content:"Discover the Zayqa Lounge dining menu."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:()=><Outlet/>});
