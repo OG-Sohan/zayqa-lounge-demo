@@ -189,6 +189,23 @@ export const saveManagedMenuItem = createServerFn({ method: "POST" }).middleware
   return rowToDish(row);
 });
 
+const uploadSchema = z.object({
+  fileName: z.string().trim().min(1).max(120),
+  contentType: z.enum(["image/jpeg", "image/png", "image/webp", "image/avif"]),
+  base64: z.string().min(1).max(7_000_000),
+});
+
+export const uploadDishImage = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((data) => uploadSchema.parse(data)).handler(async ({ data, context }) => {
+  await assertAdmin(context as Ctx);
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const ext = data.fileName.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+  const path = `dishes/${crypto.randomUUID()}.${ext}`;
+  const bytes = Uint8Array.from(atob(data.base64), (char) => char.charCodeAt(0));
+  const { error } = await supabaseAdmin.storage.from("site-media").upload(path, bytes, { contentType: data.contentType, upsert: false });
+  if (error) throw new Error("Could not upload that photo.");
+  return { url: `/api/public/media/${path}` };
+});
+
 export const removeManagedMenuItem = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((data) => z.object({ id: z.string().uuid() }).parse(data)).handler(async ({ data, context }) => {
   await assertAdmin(context as Ctx);
   const { error } = await context.supabase.from("menu_items").delete().eq("id", data.id);
