@@ -180,7 +180,7 @@ function Admin() {
           <div className="space-y-10">{groupedMenu.map(({ category, items }) => <section key={category.id}>
             <div className="mb-4 flex items-end justify-between gap-4"><h2 className="text-5xl">{category.name}</h2><span className="text-xs uppercase text-muted-foreground">{items.length} dishes</span></div>
             <div className="divide-y divide-border border-y border-border">{items.map((item) => <article key={item.id} className="grid gap-4 py-5 md:grid-cols-[120px_minmax(0,1fr)_auto] md:items-center">
-              <img src={item.image} alt="" className="aspect-[4/3] w-full object-cover md:w-30"/>
+              <DishImage src={item.image} alt={item.name} sizes="(max-width:767px) 100vw, 120px" className="aspect-[4/3] w-full md:w-30"/>
               <div><div className="flex flex-wrap items-center gap-3"><h3 className="text-3xl">{item.name}</h3><span className="text-sm">{money(item.price)}</span><span className="text-xs uppercase text-muted-foreground">{item.available ? "Available" : "Hidden"}</span>{item.featured && <span className="text-xs uppercase text-burgundy">Featured</span>}</div><p className="mt-1 text-sm leading-6 text-muted-foreground">{item.description}</p></div>
               <div className="flex gap-2 md:justify-end"><Button type="button" variant="editorial" onClick={() => setEditingDish(toEditable(item))}><Edit3/>Edit</Button><Button type="button" variant="destructive" size="icon" disabled={busy} onClick={() => removeDish(item)} aria-label={`Remove ${item.name}`}><Trash2/></Button></div>
             </article>)}</div>
