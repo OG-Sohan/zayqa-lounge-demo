@@ -159,3 +159,7 @@ html,body{overflow-x:clip}h1,h2,h3{letter-spacing:0}.home-page,.page,main,.signa
 @media(min-width:768px){.desktop-nav a,.location-link{display:inline-flex;align-items:center;min-height:44px}}
 @media(min-width:768px){.desktop-nav a{min-width:44px;justify-content:center}.header-actions a,.header-actions button{min-height:44px}}
 .footer-col a{display:inline-flex;align-items:center;min-height:44px;margin-block:-13px}
+.category-nav a,.category-nav button{display:inline-flex;align-items:center;min-height:44px}
+.menu-category-head>a,.menu-rail-head>a,.back-link,.back-to-top{display:inline-flex;align-items:center;min-height:44px;margin-block:-10px}
+.dish-card-copy>div>a{display:block;padding-block:10px;margin-block:-10px}
+.footer-col a{min-width:44px}
