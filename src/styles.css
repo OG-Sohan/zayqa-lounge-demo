@@ -163,3 +163,4 @@ html,body{overflow-x:clip}h1,h2,h3{letter-spacing:0}.home-page,.page,main,.signa
 .menu-category-head>a,.menu-rail-head>a,.back-link,.back-to-top{display:inline-flex;align-items:center;min-height:44px;margin-block:-10px}
 .dish-card-copy>div>a{display:block;padding-block:10px;margin-block:-10px}
 .footer-col a{min-width:44px}
+.feature-primary a{min-height:44px}
