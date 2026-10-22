@@ -250,6 +250,7 @@ function DishEditor({ dish, setDish, submitDish, categories, busy, onNew }: { di
       <div className="grid gap-3 sm:grid-cols-2">
         <div><Label htmlFor="dish-category">Category</Label><OptionSelect id="dish-category" value={dish.categoryId} required onChange={(event) => setDish({ ...dish, categoryId: event.target.value })} className="mt-2 h-10 w-full border border-input bg-background px-3 text-sm">{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</OptionSelect></div>
         <div><Label htmlFor="dish-image">Image</Label><OptionSelect id="dish-image" value={dish.imageUrl ? UPLOADED : dish.imageKey} onChange={(event) => { if (event.target.value !== UPLOADED) setDish({ ...dish, imageKey: event.target.value as MenuImageKey, imageUrl: null }); }} className="mt-2 h-10 w-full border border-input bg-background px-3 text-sm">{dish.imageUrl && <option value={UPLOADED}>uploaded photo</option>}{Object.keys(menuImageKeys).map((key) => <option key={key} value={key}>{key}</option>)}</OptionSelect></div>
+        <DishPhotoUpload dish={dish} setDish={setDish} busy={busy}/>
       </div>
       <AdminField label="Price" name="dish-price" type="number" value={dish.price} onChange={(value) => setDish({ ...dish, price: value })}/>
       <div><Label htmlFor="dish-description">Description</Label><Textarea id="dish-description" value={dish.description} onChange={(event) => setDish({ ...dish, description: event.target.value })} className="mt-2 min-h-28 rounded-none" required/></div>
