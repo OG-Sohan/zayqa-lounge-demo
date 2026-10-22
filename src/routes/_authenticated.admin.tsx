@@ -241,6 +241,45 @@ function Admin() {
   </section>;
 }
 
+function DishPhotoUpload({ dish, setDish, busy }: { dish: EditableDish; setDish: (dish: EditableDish) => void; busy: boolean }) {
+  const upload = useServerFn(uploadDishImage);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const shown = preview ?? dish.imageUrl;
+
+  async function onFile(event: FormEvent<HTMLInputElement>) {
+    const file = event.currentTarget.files?.[0];
+    if (!file) return;
+    setUploadError("");
+    setPreview(URL.createObjectURL(file));
+    setUploading(true);
+    try {
+      const buffer = await file.arrayBuffer();
+      let binary = "";
+      const bytes = new Uint8Array(buffer);
+      for (let index = 0; index < bytes.length; index += 0x8000) binary += String.fromCharCode(...bytes.subarray(index, index + 0x8000));
+      const { url } = await upload({ data: { fileName: file.name, contentType: file.type as "image/jpeg" | "image/png" | "image/webp" | "image/avif", base64: btoa(binary) } });
+      setDish({ ...dish, imageUrl: url });
+    } catch {
+      setPreview(null);
+      setUploadError("That photo didn't upload. Please try another image.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return <div>
+    <Label htmlFor="dish-photo">Photo upload</Label>
+    <div className="mt-2 grid gap-3">
+      <DishImage src={shown ?? ""} alt={shown ? `${dish.name || "Dish"} photo` : "No photo yet"} sizes="200px" className="w-32"/>
+      <input id="dish-photo" type="file" accept="image/jpeg,image/png,image/webp,image/avif" disabled={busy || uploading} onChange={(event) => void onFile(event)} className="text-sm file:mr-3 file:border file:border-input file:bg-background file:px-3 file:py-2 file:text-xs file:uppercase"/>
+      {uploading && <p className="text-xs uppercase text-muted-foreground">Uploading photo…</p>}
+      {uploadError && <p role="alert" className="text-sm text-burgundy">{uploadError}</p>}
+    </div>
+  </div>;
+}
+
 function DishEditor({ dish, setDish, submitDish, categories, busy, onNew }: { dish: EditableDish; setDish: (dish: EditableDish) => void; submitDish: (event: FormEvent<HTMLFormElement>) => void; categories: Overview["categories"]; busy: boolean; onNew: () => void }) {
   return <form onSubmit={submitDish} className="premium-card self-start border border-border bg-card p-5 xl:sticky xl:top-24">
     <div className="flex items-start justify-between gap-3"><div><p className="text-xs uppercase tracking-[0.18em] text-burgundy">Dish editor</p><h2 className="mt-2 text-4xl">{dish.id ? "Edit dish" : "Add dish"}</h2></div><Button type="button" variant="editorial" onClick={onNew}><Plus/>New</Button></div>
