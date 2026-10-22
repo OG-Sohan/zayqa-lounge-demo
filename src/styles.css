@@ -154,6 +154,6 @@ html,body{overflow-x:clip}h1,h2,h3{letter-spacing:0}.home-page,.page,main,.signa
 .cart-sheet-image{width:72px;flex:none}
 @media(max-width:767px){.cart-item-image{width:82px}}
 @media(prefers-reduced-motion:reduce){.dish-image-frame::after{animation:none;display:none}.dish-image-frame img{transition:none}}
-.desktop-nav a,.location-link{display:inline-flex;align-items:center;min-height:44px}
 .icon-link{min-width:44px;min-height:44px;justify-content:center}
 .wordmark{display:inline-flex;align-items:center;min-height:44px}
+@media(min-width:768px){.desktop-nav a,.location-link{display:inline-flex;align-items:center;min-height:44px}}
