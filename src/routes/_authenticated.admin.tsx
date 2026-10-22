@@ -1,4 +1,5 @@
 import { OptionSelect } from "@/components/hospitality-controls";
+import { DishImage } from "@/components/dish-image";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,6 +20,7 @@ import {
   removeUserRole,
   saveManagedMenuItem,
   saveRestaurantSettings,
+  uploadDishImage,
   updateOrderStatus,
   updateReservationStatus,
   type ManagedDish,
@@ -180,7 +182,7 @@ function Admin() {
           <div className="space-y-10">{groupedMenu.map(({ category, items }) => <section key={category.id}>
             <div className="mb-4 flex items-end justify-between gap-4"><h2 className="text-5xl">{category.name}</h2><span className="text-xs uppercase text-muted-foreground">{items.length} dishes</span></div>
             <div className="divide-y divide-border border-y border-border">{items.map((item) => <article key={item.id} className="grid gap-4 py-5 md:grid-cols-[120px_minmax(0,1fr)_auto] md:items-center">
-              <img src={item.image} alt="" className="aspect-[4/3] w-full object-cover md:w-30"/>
+              <DishImage src={item.image} alt={item.name} sizes="(max-width:767px) 100vw, 120px" className="aspect-[4/3] w-full md:w-30"/>
               <div><div className="flex flex-wrap items-center gap-3"><h3 className="text-3xl">{item.name}</h3><span className="text-sm">{money(item.price)}</span><span className="text-xs uppercase text-muted-foreground">{item.available ? "Available" : "Hidden"}</span>{item.featured && <span className="text-xs uppercase text-burgundy">Featured</span>}</div><p className="mt-1 text-sm leading-6 text-muted-foreground">{item.description}</p></div>
               <div className="flex gap-2 md:justify-end"><Button type="button" variant="editorial" onClick={() => setEditingDish(toEditable(item))}><Edit3/>Edit</Button><Button type="button" variant="destructive" size="icon" disabled={busy} onClick={() => removeDish(item)} aria-label={`Remove ${item.name}`}><Trash2/></Button></div>
             </article>)}</div>
@@ -239,6 +241,45 @@ function Admin() {
   </section>;
 }
 
+function DishPhotoUpload({ dish, setDish, busy }: { dish: EditableDish; setDish: (dish: EditableDish) => void; busy: boolean }) {
+  const upload = useServerFn(uploadDishImage);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const shown = preview ?? dish.imageUrl;
+
+  async function onFile(event: FormEvent<HTMLInputElement>) {
+    const file = event.currentTarget.files?.[0];
+    if (!file) return;
+    setUploadError("");
+    setPreview(URL.createObjectURL(file));
+    setUploading(true);
+    try {
+      const buffer = await file.arrayBuffer();
+      let binary = "";
+      const bytes = new Uint8Array(buffer);
+      for (let index = 0; index < bytes.length; index += 0x8000) binary += String.fromCharCode(...bytes.subarray(index, index + 0x8000));
+      const { url } = await upload({ data: { fileName: file.name, contentType: file.type as "image/jpeg" | "image/png" | "image/webp" | "image/avif", base64: btoa(binary) } });
+      setDish({ ...dish, imageUrl: url });
+    } catch {
+      setPreview(null);
+      setUploadError("That photo didn't upload. Please try another image.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return <div>
+    <Label htmlFor="dish-photo">Photo upload</Label>
+    <div className="mt-2 grid gap-3">
+      <DishImage src={shown ?? ""} alt={shown ? `${dish.name || "Dish"} photo` : "No photo yet"} sizes="200px" className="w-32"/>
+      <input id="dish-photo" type="file" accept="image/jpeg,image/png,image/webp,image/avif" disabled={busy || uploading} onChange={(event) => void onFile(event)} className="text-sm file:mr-3 file:border file:border-input file:bg-background file:px-3 file:py-2 file:text-xs file:uppercase"/>
+      {uploading && <p className="text-xs uppercase text-muted-foreground">Uploading photo…</p>}
+      {uploadError && <p role="alert" className="text-sm text-burgundy">{uploadError}</p>}
+    </div>
+  </div>;
+}
+
 function DishEditor({ dish, setDish, submitDish, categories, busy, onNew }: { dish: EditableDish; setDish: (dish: EditableDish) => void; submitDish: (event: FormEvent<HTMLFormElement>) => void; categories: Overview["categories"]; busy: boolean; onNew: () => void }) {
   return <form onSubmit={submitDish} className="premium-card self-start border border-border bg-card p-5 xl:sticky xl:top-24">
     <div className="flex items-start justify-between gap-3"><div><p className="text-xs uppercase tracking-[0.18em] text-burgundy">Dish editor</p><h2 className="mt-2 text-4xl">{dish.id ? "Edit dish" : "Add dish"}</h2></div><Button type="button" variant="editorial" onClick={onNew}><Plus/>New</Button></div>
@@ -248,6 +289,7 @@ function DishEditor({ dish, setDish, submitDish, categories, busy, onNew }: { di
       <div className="grid gap-3 sm:grid-cols-2">
         <div><Label htmlFor="dish-category">Category</Label><OptionSelect id="dish-category" value={dish.categoryId} required onChange={(event) => setDish({ ...dish, categoryId: event.target.value })} className="mt-2 h-10 w-full border border-input bg-background px-3 text-sm">{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</OptionSelect></div>
         <div><Label htmlFor="dish-image">Image</Label><OptionSelect id="dish-image" value={dish.imageUrl ? UPLOADED : dish.imageKey} onChange={(event) => { if (event.target.value !== UPLOADED) setDish({ ...dish, imageKey: event.target.value as MenuImageKey, imageUrl: null }); }} className="mt-2 h-10 w-full border border-input bg-background px-3 text-sm">{dish.imageUrl && <option value={UPLOADED}>uploaded photo</option>}{Object.keys(menuImageKeys).map((key) => <option key={key} value={key}>{key}</option>)}</OptionSelect></div>
+        <DishPhotoUpload dish={dish} setDish={setDish} busy={busy}/>
       </div>
       <AdminField label="Price" name="dish-price" type="number" value={dish.price} onChange={(value) => setDish({ ...dish, price: value })}/>
       <div><Label htmlFor="dish-description">Description</Label><Textarea id="dish-description" value={dish.description} onChange={(event) => setDish({ ...dish, description: event.target.value })} className="mt-2 min-h-28 rounded-none" required/></div>

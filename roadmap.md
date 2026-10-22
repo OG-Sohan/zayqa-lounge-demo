@@ -15,6 +15,8 @@
 - [x] Ordering feedback, mobile cart sheet and floating hospitality bar
 - [x] Branded date/time/option controls and preserved existing flows
 - [x] Responsive browser checks, accessibility and reduced-motion validation
+- [x] Photos for all 20 dishes (15 new, 768w/1280w WebP), shared DishImage component everywhere
+- [x] Admin dish photo upload with preview; branded placeholder fallback
+- [x] Route prefetch on intent; 44px tap targets; multi-width overflow/error sweeps
 - [ ] Real iPhone Safari and Android device validation (requires physical devices)
-
 - [ ] Owner-only management readback verification (current signed-in account lacks management access)
