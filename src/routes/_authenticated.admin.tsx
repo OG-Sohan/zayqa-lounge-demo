@@ -1,4 +1,5 @@
 import { OptionSelect } from "@/components/hospitality-controls";
+import { DishImage } from "@/components/dish-image";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,6 +20,7 @@ import {
   removeUserRole,
   saveManagedMenuItem,
   saveRestaurantSettings,
+  uploadDishImage,
   updateOrderStatus,
   updateReservationStatus,
   type ManagedDish,
