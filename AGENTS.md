@@ -14,3 +14,4 @@
 - Dish photo assignment uses slug-specific optimized images or unique owner uploads; missing/repeated photos render as text-only dishes.
 
 - Heading masks are rendered through MotionHeading in React, never by reparenting DOM nodes; this prevents route-transition teardown errors.
+- Theme overrides live in the 'Wine & saffron theme layer' block at the end of src/styles.css; legacy token names (--cream, --olive, --burgundy) are remapped there so older rules inherit the dark theme.

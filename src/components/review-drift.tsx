@@ -1,8 +1,27 @@
-import { useEffect, useRef } from "react";
 import { reviews } from "@/lib/zayqa-data";
-export function ReviewDrift(){const ref=useRef<HTMLDivElement>(null);useEffect(()=>{const el=ref.current,track=el?.querySelector<HTMLElement>(".review-track");if(!el||!track)return;const media=matchMedia("(prefers-reduced-motion: reduce)");let id=0,last=0,offset=0,pauseUntil=0,drag=false,x=0,hover=false,focus=false,near=false;
- const tick=(t:number)=>{id=0;if(!near||media.matches)return;track.style.willChange="transform";const dt=Math.min(50,t-last||16);last=t;if(!drag&&!hover&&!focus&&t>pauseUntil)offset-=dt*.025;const half=track.scrollWidth/2;offset=((offset%half)+half)%half-half;track.style.transform=`translateX(${offset}px)`;id=requestAnimationFrame(tick)};
- const observe=new IntersectionObserver(es=>{near=es[0]?.isIntersecting??false;if(near&&!id&&!media.matches){last=0;id=requestAnimationFrame(tick)}else if(!near){cancelAnimationFrame(id);id=0;track.style.willChange=""}},{rootMargin:"150px"});observe.observe(el);
- const down=(e:PointerEvent)=>{drag=true;x=e.clientX;el.setPointerCapture(e.pointerId)};const move=(e:PointerEvent)=>{if(!drag)return;offset+=e.clientX-x;x=e.clientX};const up=()=>{drag=false;pauseUntil=performance.now()+2000};const enter=(e:PointerEvent)=>{if(e.pointerType==="mouse")hover=true};const leave=()=>{hover=false;pauseUntil=performance.now()+2000};const focusIn=()=>focus=true;const focusOut=()=>{focus=false;pauseUntil=performance.now()+2000};const change=()=>{cancelAnimationFrame(id);id=0;if(media.matches){track.style.transform=""}else if(near)id=requestAnimationFrame(tick)};
- el.addEventListener("pointerdown",down);el.addEventListener("pointermove",move);el.addEventListener("pointerup",up);el.addEventListener("pointercancel",up);el.addEventListener("pointerenter",enter);el.addEventListener("pointerleave",leave);el.addEventListener("focusin",focusIn);el.addEventListener("focusout",focusOut);media.addEventListener("change",change);return()=>{observe.disconnect();cancelAnimationFrame(id);media.removeEventListener("change",change);el.removeEventListener("pointerdown",down);el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",up);el.removeEventListener("pointercancel",up);el.removeEventListener("pointerenter",enter);el.removeEventListener("pointerleave",leave);el.removeEventListener("focusin",focusIn);el.removeEventListener("focusout",focusOut)};
- },[]);return <div ref={ref} className="review-marquee" tabIndex={0} aria-label="Guest reviews"><div className="review-track">{[...reviews,...reviews].map((r,i)=><figure className="review-card" key={i} aria-hidden={i>=reviews.length}><blockquote>“{r.quote}”</blockquote><figcaption>— {r.name} · {r.detail}</figcaption></figure>)}</div></div>}
+
+type Review = (typeof reviews)[number];
+function Row({ list, reverse }: { list: Review[]; reverse?: boolean }) {
+  const cards = (hidden: boolean) => (
+    <div className="review-set" aria-hidden={hidden || undefined}>
+      {list.map((r, i) => (
+        <figure className="review-card glass" key={i}>
+          <blockquote>“{r.quote}”</blockquote>
+          <figcaption>{r.name} · {r.detail}</figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+  // The second set is a visual clone for a seamless loop; screen readers only get the first.
+  return <div className={`review-row ${reverse ? "is-reverse" : ""}`}><div className="review-track">{cards(false)}{cards(true)}</div></div>;
+}
+
+export function ReviewDrift() {
+  const half = Math.ceil(reviews.length / 2);
+  return (
+    <div className="review-marquee" tabIndex={0} aria-label="Guest reviews">
+      <Row list={reviews.slice(0, half)} />
+      <Row list={reviews.slice(half)} reverse />
+    </div>
+  );
+}

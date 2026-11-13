@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { photoSrcSet } from "@/lib/dish-photos";
 
 type DishImageProps = {
@@ -14,6 +14,9 @@ type DishImageProps = {
 export function DishImage({ src, alt, sizes, className = "", eager = false }: DishImageProps) {
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
+  const ref = useRef<HTMLImageElement>(null);
+  // Images that finish before hydration never fire onLoad in React, so check once mounted.
+  useEffect(() => { const img = ref.current; if (img?.complete && img.naturalWidth > 0) setLoaded(true); }, [src]);
   if (!src || failed) {
     return (
       <div className={`dish-image-frame dish-image-placeholder ${className}`} role="img" aria-label={alt}>
@@ -24,6 +27,7 @@ export function DishImage({ src, alt, sizes, className = "", eager = false }: Di
   return (
     <div className={`dish-image-frame ${loaded ? "is-loaded" : ""} ${className}`}>
       <img
+        ref={ref}
         src={src}
         srcSet={photoSrcSet(src)}
         sizes={sizes}

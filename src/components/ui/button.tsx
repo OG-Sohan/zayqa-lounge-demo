@@ -5,28 +5,28 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-none text-sm font-semibold uppercase cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-[15px] font-medium tracking-[0.01em] cursor-pointer transition-[transform,box-shadow,background-color,color,border-color] duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default: "bg-saffron text-wine hover:shadow-[var(--saffron-glow)]",
         destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        lightOutline: "border border-cream/70 text-cream hover:bg-cream hover:text-olive",
-        cream: "bg-cream text-olive hover:bg-cream/90",
-        creamOutline: "border border-cream/60 text-cream hover:bg-cream hover:text-olive",
-        burgundy: "bg-burgundy text-cream hover:bg-burgundy/90",
-        editorial: "border border-current bg-transparent shadow-none hover:bg-foreground hover:text-background",
-        text: "px-0 text-foreground underline decoration-brass underline-offset-4 hover:text-burgundy",
+          "glass-btn text-ivory hover:border-saffron/70",
+        secondary: "glass-btn text-ivory hover:border-saffron/70",
+        ghost: "hover:bg-ivory/10 hover:translate-y-0",
+        link: "text-saffron underline-offset-4 hover:underline",
+        lightOutline: "glass-btn text-ivory hover:border-saffron/70",
+        cream: "bg-saffron text-wine hover:shadow-[var(--saffron-glow)]",
+        creamOutline: "glass-btn text-ivory hover:border-saffron/70",
+        burgundy: "bg-saffron text-wine hover:shadow-[var(--saffron-glow)]",
+        editorial: "glass-btn text-ivory hover:border-saffron/70",
+        text: "px-0 text-ivory underline decoration-saffron underline-offset-4 hover:text-saffron hover:translate-y-0",
       },
       size: {
-        default: "min-h-11 px-5 py-3",
+        default: "min-h-12 px-6 py-3",
         sm: "min-h-10 px-4 text-xs",
-        lg: "min-h-13 px-8",
+        lg: "min-h-14 px-8",
         icon: "h-11 w-11",
       },
     },
